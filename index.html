@@ -55,9 +55,8 @@
       align-items: center;
     }
 
-    /* Logo Styling */
-    .logo-img {
-      height: 48px;
+    .nav-logo-img {
+      height: 52px;
       width: auto;
       display: block;
     }
@@ -78,7 +77,16 @@
     /* Hero Section */
     .hero {
       text-align: center;
-      padding: 60px 0 40px 0;
+      padding: 50px 0 40px 0;
+    }
+
+    /* Großes zentriertes Haupt-Logo */
+    .hero-logo {
+      max-width: 300px;
+      width: 80%;
+      height: auto;
+      margin: 0 auto 24px auto;
+      display: block;
     }
 
     .badge {
@@ -91,7 +99,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       text-transform: uppercase;
     }
 
@@ -188,6 +196,7 @@
     @media (max-width: 768px) {
       .process-grid { grid-template-columns: 1fr; }
       h1 { font-size: 2rem; }
+      .hero-logo { max-width: 220px; }
     }
 
     video {
@@ -297,8 +306,7 @@
     <!-- Header / Navigation -->
     <nav>
       <div class="logo-container">
-        <!-- Dein Logo-Bild -->
-        <img src="logo.png" alt="Rhypolysis Logo" class="logo-img">
+        <img src="logo.png" alt="Rhypolysis Logo" class="nav-logo-img">
       </div>
       <div class="nav-links">
         <a href="#technologie">Technologie</a>
@@ -310,6 +318,9 @@
 
     <!-- Hero Section -->
     <section class="hero">
+      <!-- Großes zentriertes Logo am Anfang -->
+      <img src="logo.png" alt="Rhypolysis Logo" class="hero-logo">
+      
       <div class="badge">Phase 1: Fully Engineered Digital Twin</div>
       <h1>Mobile Container-Lösung für unvorsortierten Mischmüll</h1>
       <p>Rhypolysis löst das Abfall- und Logistikproblem auf Inseln und in isolierten Regionen. Zerkleinerung, Metallabscheidung und autotherme Pyrolyse – vereint in einem einzigen 40-Fuß-High-Cube Container.</p>
@@ -329,7 +340,7 @@
       <div class="viewer-hint">🖱️ Interaktiver 3D-Digital-Twin: Klicken und ziehen, um das Modul zu drehen und zu zoomen.</div>
     </div>
 
-    <!-- Die 3 Kern-Pfeiler / Nutzenversprechen -->
+    <!-- Die 3 Kern-Pfeiler -->
     <div class="grid">
       <div class="card">
         <h3>Keine Vorsortierung</h3>
@@ -364,7 +375,7 @@
       </div>
     </div>
 
-    <!-- Geschäftsmodell / Ertragsmodell -->
+    <!-- Geschäftsmodell -->
     <div class="grid" id="geschaeftsmodell">
       <div class="card">
         <h3>1. Container-Verkauf & Leasing</h3>
@@ -380,7 +391,7 @@
       </div>
     </div>
 
-    <!-- Strategie & Roadmap -->
+    <!-- Roadmap -->
     <div class="process-section" id="roadmap">
       <h2>Technologie- & Finanzierungs-Roadmap</h2>
       <p style="color: var(--text-muted);">Warum wir zuerst auf ein vollständiges Digital-Twin-Engineering setzen:</p>
@@ -412,7 +423,7 @@
       </div>
     </div>
 
-    <!-- Investor Call-to-Action -->
+    <!-- Investor CTA -->
     <div class="cta-box" id="investoren">
       <h2>Interesse an der Seed-Finanzierungsrunde?</h2>
       <p>Wir suchen strategische Business Angels und CleanTech-Partner für die Umsetzung des ersten physischen Pilot-Reaktors.</p>
