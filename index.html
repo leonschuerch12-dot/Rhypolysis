@@ -184,4 +184,235 @@
 
     video {
       width: 100%;
-      border-radius:
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .process-steps {
+      list-style: none;
+    }
+
+    .process-steps li {
+      margin-bottom: 18px;
+      padding-left: 28px;
+      position: relative;
+      color: var(--text-muted);
+    }
+
+    .process-steps li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .process-steps strong {
+      color: var(--text-bright);
+    }
+
+    /* Roadmap / Strategy */
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent-cyan);
+    }
+
+    .roadmap-tag {
+      font-weight: bold;
+      color: var(--accent-cyan);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    /* Investor CTA */
+    .cta-box {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0,242,254,0.05), rgba(79,172,254,0.05));
+      border: 1px solid var(--accent-cyan);
+      border-radius: 16px;
+      padding: 50px 20px;
+      margin-bottom: 60px;
+    }
+
+    .cta-box h2 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 24px auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #000;
+      font-weight: 700;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      padding: 40px 0;
+      border-top: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header / Navigation -->
+    <nav>
+      <div class="logo">Rhypolysis</div>
+      <div class="nav-links">
+        <a href="#technologie">Technologie</a>
+        <a href="#geschaeftsmodell">Geschäftsmodell</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#investoren">Investoren</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="badge">Phase 1: Fully Engineered Digital Twin</div>
+      <h1>Mobile Waste-to-Energy Container für unvorsortierten Mischmüll</h1>
+      <p>Rhypolysis löst das Abfall- und Logistikproblem auf Inseln und in isolierten Regionen. Zerkleinerung, Metallabscheidung und autotherme Pyrolyse – vereint in einem einzigen 40-Fuß-High-Cube Container.</p>
+    </section>
+
+    <!-- 3D Prototyp Viewer -->
+    <div class="viewer-card" id="technologie">
+      <model-viewer 
+        src="shredder.glb" 
+        alt="Rhypolysis Shredder 3D Prototyp" 
+        auto-rotate 
+        camera-controls 
+        shadow-intensity="1.5"
+        exposure="1"
+        ar>
+      </model-viewer>
+      <div class="viewer-hint">🖱️ Interaktiver 3D-Digital-Twin: Klicken und ziehen, um das Modul zu drehen und zu zoomen.</div>
+    </div>
+
+    <!-- Die 3 Kern-Pfeiler / Nutzenversprechen -->
+    <div class="grid">
+      <div class="card">
+        <h3>Keine Vorsortierung</h3>
+        <p>Herkömmliche Anlagen verlangen getrennten Plastikmüll. Das Rhypolysis-System ist speziell für <strong>unvorsortierten Haus- und Mischmüll</strong> konstruiert.</p>
+      </div>
+      <div class="card">
+        <h3>100% Mobil & Modular</h3>
+        <p>Integriert in ein standardisiertes <strong>40-Fuß-High-Cube-Container-Format</strong>. Einfacher Schiffs- und LKW-Transport direkt an den Einsatzort.</p>
+      </div>
+      <div class="card">
+        <h3>Autothermer Betrieb</h3>
+        <p>Nach einer kurzen Anheizphase nutzt die Anlage das selbsterzeugte Synthegas zur Beheizung. Der Prozess läuft weitgehend <strong>energieautark</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Prozess-Simulation & Video -->
+    <div class="process-section">
+      <h2>Der integrierte Prozessablauf</h2>
+      <p style="color: var(--text-muted);">Alle Komponenten wurden virtuell im 3D-CAD-Modell simuliert, um maximale Volumeneffizienz im Container zu garantieren:</p>
+      
+      <div class="process-grid">
+        <video autoplay loop muted playsinline>
+          <source src="shredder-loop.mp4" type="video/mp4">
+        </video>
+        
+        <ul class="process-steps">
+          <li><strong>1. Zerkleinerung:</strong> UNTHA RS40 Vierwellen-Schredder zerkleinert unvorsortierten Müll auf definierte Korngröße.</li>
+          <li><strong>2. Wertstoff-Abscheidung:</strong> Integrierter Wirbelstromabscheider trennt Eisen- und Aluminium-Metalle zu 100% sauber ab.</li>
+          <li><strong>3. Vortrocknung:</strong> Die Abwärme trocknet feuchtes Input-Material für maximale thermische Effizienz.</li>
+          <li><strong>4. Pyrolyse-Reaktor:</strong> Unter Sauerstoffausschluss entsteht hochwertiges Synthesegas sowie Koks-Briketts.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Geschäftsmodell / Ertragsmodell -->
+    <div class="grid" id="geschaeftsmodell">
+      <div class="card">
+        <h3>1. Container-Verkauf & Leasing</h3>
+        <p>Direktverkauf oder Leasingverträge an Inselgemeinden (z. B. Korfu) und Resort-Betreiber, die unter teuren Mülltransporten aufs Festland leiden.</p>
+      </div>
+      <div class="card">
+        <h3>2. Metall-Recycling</h3>
+        <p>Zusätzliche Einnahmequelle durch den Verkauf der vorab sauber getrennten Reinflux-Metalle (Eisen & Aluminium) an Recycling-Betriebe.</p>
+      </div>
+      <div class="card">
+        <h3>3. Energie & Koks-Briketts</h3>
+        <p>Einspeisung von lokal erzeugtem Strom/Wärme sowie der Vertrieb von hochwertigen Koks-Briketts als Brennstoff oder Bodenverbesserer.</p>
+      </div>
+    </div>
+
+    <!-- Strategie & Roadmap -->
+    <div class="process-section" id="roadmap">
+      <h2>Technologie- & Finanzierungs-Roadmap</h2>
+      <p style="color: var(--text-muted);">Warum wir zuerst auf ein vollständiges Digital-Twin-Engineering setzen:</p>
+
+      <div class="roadmap-list">
+        <div class="roadmap-item">
+          <div class="roadmap-tag">Phase 1 (Aktuell)</div>
+          <div>
+            <strong>Digital Twin & Pre-Feasibility (Bootstrapping)</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Vollständige CAD-Modellierung in Blender, Simulation des Müllstroms und Optimierung der Schnittstellen. Kapitaleffiziente Vorbereitung ohne Hardware-Fehlinvestitionen.</span>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-tag">Phase 2 (Seed Funding)</div>
+          <div>
+            <strong>Prototypenbau & Pilotierung (250'000 – 380'000 CHF)</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Einwerbung von Kapital (Business Angels & EU-Förderfonds) für den Physischen Bau der 40-Fuß-Container-Anlage und Einholung der CE/ATEX-Zertifizierungen.</span>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-tag">Phase 3 (Serienstart)</div>
+          <div>
+            <strong>Rollout & Skalierung</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Reallabor-Testbetrieb auf einer Partner-Insel und Start der Serienfertigung für europäische Inselregionen und Hotelresorts.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investor Call-to-Action -->
+    <div class="cta-box" id="investoren">
+      <h2>Interesse an der Seed-Finanzierungsrunde?</h2>
+      <p>Wir suchen strategische Business Angels und CleanTech-Partner für die Umsetzung des ersten physischen Pilot-Reaktors.</p>
+      <a href="mailto:contact@rhypolysis.com" class="btn">Pitch Deck & Dokumentation anfordern</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2026 Rhypolysis Systems. All rights reserved. | CleanTech Innovation for Island Waste Management</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
