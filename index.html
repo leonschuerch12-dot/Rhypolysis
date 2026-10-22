@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rhypolysis Systems | Mobile Waste-to-Energy Technology</title>
+  <title>Rhypolysis Systems | Mobile Recycling Technology</title>
   
   <!-- Google <model-viewer> für das interaktive 3D-Modell -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #0b0e14;
-      --card-bg: #131822;
-      --card-border: #212938;
-      --accent-cyan: #00f2fe;
-      --accent-blue: #4facfe;
-      --text-bright: #f0f6fc;
-      --text-muted: #919eab;
-      --text-dim: #637381;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --accent-green: #10b981;
+      --accent-darkgreen: #059669;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
     }
 
     * {
@@ -28,8 +28,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-bright);
+      background-color: var(--bg-light);
+      color: var(--text-main);
       line-height: 1.6;
       scroll-behavior: smooth;
     }
@@ -40,23 +40,26 @@
       padding: 0 20px;
     }
 
-    /* Navigation */
+    /* Navigation Header */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 0;
+      padding: 20px 0;
       border-bottom: 1px solid var(--card-border);
+      background-color: #ffffff;
     }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Logo Styling */
+    .logo-img {
+      height: 48px;
+      width: auto;
+      display: block;
     }
 
     .nav-links a {
@@ -64,11 +67,12 @@
       text-decoration: none;
       margin-left: 24px;
       font-size: 0.95rem;
+      font-weight: 500;
       transition: color 0.2s;
     }
 
     .nav-links a:hover {
-      color: var(--accent-cyan);
+      color: var(--accent-green);
     }
 
     /* Hero Section */
@@ -80,13 +84,13 @@
     .badge {
       display: inline-block;
       padding: 6px 16px;
-      background: rgba(0, 242, 254, 0.1);
-      border: 1px solid var(--accent-cyan);
+      background: #ecfdf5;
+      border: 1px solid var(--accent-green);
       border-radius: 20px;
-      color: var(--accent-cyan);
+      color: var(--accent-darkgreen);
       font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 20px;
       text-transform: uppercase;
     }
@@ -96,6 +100,7 @@
       line-height: 1.2;
       margin-bottom: 20px;
       font-weight: 800;
+      color: var(--text-main);
     }
 
     .hero p {
@@ -112,13 +117,13 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 60px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
     model-viewer {
       width: 100%;
       height: 480px;
-      background-color: #06080c;
+      background-color: #f1f5f9;
       border-radius: 12px;
     }
 
@@ -142,12 +147,13 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     }
 
     .card h3 {
       font-size: 1.3rem;
       margin-bottom: 12px;
-      color: var(--accent-cyan);
+      color: var(--accent-darkgreen);
     }
 
     .card p {
@@ -162,11 +168,13 @@
       border-radius: 16px;
       padding: 40px;
       margin-bottom: 60px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     }
 
     .process-section h2 {
       font-size: 1.8rem;
       margin-bottom: 16px;
+      color: var(--text-main);
     }
 
     .process-grid {
@@ -203,12 +211,12 @@
       content: "✓";
       position: absolute;
       left: 0;
-      color: var(--accent-cyan);
+      color: var(--accent-green);
       font-weight: bold;
     }
 
     .process-steps strong {
-      color: var(--text-bright);
+      color: var(--text-main);
     }
 
     /* Roadmap / Strategy */
@@ -223,15 +231,15 @@
       display: flex;
       align-items: flex-start;
       gap: 16px;
-      padding: 16px;
-      background: rgba(255, 255, 255, 0.02);
+      padding: 18px;
+      background: #f1f5f9;
       border-radius: 10px;
-      border-left: 3px solid var(--accent-cyan);
+      border-left: 4px solid var(--accent-green);
     }
 
     .roadmap-tag {
       font-weight: bold;
-      color: var(--accent-cyan);
+      color: var(--accent-darkgreen);
       font-size: 0.9rem;
       white-space: nowrap;
     }
@@ -239,8 +247,8 @@
     /* Investor CTA */
     .cta-box {
       text-align: center;
-      background: linear-gradient(135deg, rgba(0,242,254,0.05), rgba(79,172,254,0.05));
-      border: 1px solid var(--accent-cyan);
+      background: #ecfdf5;
+      border: 1px solid var(--accent-green);
       border-radius: 16px;
       padding: 50px 20px;
       margin-bottom: 60px;
@@ -249,6 +257,7 @@
     .cta-box h2 {
       font-size: 2rem;
       margin-bottom: 12px;
+      color: var(--text-main);
     }
 
     .cta-box p {
@@ -260,17 +269,17 @@
     .btn {
       display: inline-block;
       padding: 14px 32px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      color: #000;
+      background: var(--accent-green);
+      color: #ffffff;
       font-weight: 700;
       border-radius: 30px;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: background-color 0.2s, transform 0.2s;
     }
 
     .btn:hover {
+      background: var(--accent-darkgreen);
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
     }
 
     footer {
@@ -287,7 +296,10 @@
   <div class="container">
     <!-- Header / Navigation -->
     <nav>
-      <div class="logo">Rhypolysis</div>
+      <div class="logo-container">
+        <!-- Dein Logo-Bild -->
+        <img src="logo.png" alt="Rhypolysis Logo" class="logo-img">
+      </div>
       <div class="nav-links">
         <a href="#technologie">Technologie</a>
         <a href="#geschaeftsmodell">Geschäftsmodell</a>
@@ -299,7 +311,7 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="badge">Phase 1: Fully Engineered Digital Twin</div>
-      <h1>Mobile Waste-to-Energy Container für unvorsortierten Mischmüll</h1>
+      <h1>Mobile Container-Lösung für unvorsortierten Mischmüll</h1>
       <p>Rhypolysis löst das Abfall- und Logistikproblem auf Inseln und in isolierten Regionen. Zerkleinerung, Metallabscheidung und autotherme Pyrolyse – vereint in einem einzigen 40-Fuß-High-Cube Container.</p>
     </section>
 
@@ -310,7 +322,7 @@
         alt="Rhypolysis Shredder 3D Prototyp" 
         auto-rotate 
         camera-controls 
-        shadow-intensity="1.5"
+        shadow-intensity="1"
         exposure="1"
         ar>
       </model-viewer>
@@ -329,7 +341,7 @@
       </div>
       <div class="card">
         <h3>Autothermer Betrieb</h3>
-        <p>Nach einer kurzen Anheizphase nutzt die Anlage das selbsterzeugte Synthegas zur Beheizung. Der Prozess läuft weitgehend <strong>energieautark</strong>.</p>
+        <p>Nach einer kurzen Anheizphase nutzt die Anlage das selbsterzeugte Synthesegas zur Beheizung. Der Prozess läuft weitgehend <strong>energieautark</strong>.</p>
       </div>
     </div>
 
@@ -363,8 +375,8 @@
         <p>Zusätzliche Einnahmequelle durch den Verkauf der vorab sauber getrennten Reinflux-Metalle (Eisen & Aluminium) an Recycling-Betriebe.</p>
       </div>
       <div class="card">
-        <h3>3. Energie & Koks-Briketts</h3>
-        <p>Einspeisung von lokal erzeugtem Strom/Wärme sowie der Vertrieb von hochwertigen Koks-Briketts als Brennstoff oder Bodenverbesserer.</p>
+        <h3>3. Nebenprodukte & Koks</h3>
+        <p>Vertrieb von hochwertigen Koks-Briketts als Brennstoff oder Bodenverbesserer sowie die Nutzung erzeugter Prozessenergie.</p>
       </div>
     </div>
 
@@ -386,7 +398,7 @@
           <div class="roadmap-tag">Phase 2 (Seed Funding)</div>
           <div>
             <strong>Prototypenbau & Pilotierung (250'000 – 380'000 CHF)</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Einwerbung von Kapital (Business Angels & EU-Förderfonds) für den Physischen Bau der 40-Fuß-Container-Anlage und Einholung der CE/ATEX-Zertifizierungen.</span>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Einwerbung von Kapital (Business Angels & EU-Förderfonds) für den physischen Bau der 40-Fuß-Container-Anlage und Einholung der CE/ATEX-Zertifizierungen.</span>
           </div>
         </div>
 
