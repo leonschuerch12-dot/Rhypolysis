@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rhypolysis Systems | Mobile Recycling Technology</title>
+  <title>Rhypolysis Systems | Vollautomatische Mobile Restmüll-Verwertung</title>
   
-  <!-- Google <model-viewer> für das interaktive 3D-Modell -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <!-- Three.js & OrbitControls für den interaktiven 3D-Container -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
   <style>
     :root {
       --bg-light: #f8fafc;
-      --card-bg: #ffffff;
+      --bg-white: #ffffff;
       --card-border: #e2e8f0;
       --accent-green: #10b981;
       --accent-darkgreen: #059669;
+      --accent-soft: #ecfdf5;
       --text-main: #0f172a;
       --text-muted: #475569;
       --text-dim: #94a3b8;
+      --shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.07), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
     }
 
     * {
@@ -27,7 +31,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-light);
       color: var(--text-main);
       line-height: 1.6;
@@ -35,254 +39,584 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
     }
 
-    /* Navigation Header */
+    /* Sticky Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--card-border);
-      background-color: #ffffff;
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
+      height: 76px;
     }
 
     .nav-logo-img {
-      height: 48px;
+      height: 46px;
       width: auto;
       display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
     }
 
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 24px;
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: 600;
       transition: color 0.2s;
     }
 
     .nav-links a:hover {
-      color: var(--accent-green);
+      color: var(--accent-darkgreen);
+    }
+
+    .nav-cta {
+      padding: 10px 20px;
+      background: var(--accent-green);
+      color: #ffffff !important;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent-darkgreen);
+      transform: translateY(-1px);
     }
 
     /* Hero Section */
     .hero {
       text-align: center;
-      padding: 50px 0 40px 0;
+      padding: 64px 0 44px 0;
+      background: radial-gradient(circle at 50% 0%, #ecfdf5 0%, rgba(248, 250, 252, 0) 70%);
     }
 
-    /* Großes zentriertes Haupt-Logo */
     .hero-logo {
-      max-width: 480px;
-      width: 90%;
+      max-width: 460px;
+      width: 88%;
       height: auto;
-      margin: 0 auto 30px auto;
+      margin: 0 auto 28px auto;
       display: block;
+      background: #ffffff;
+      padding: 12px 24px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
     }
 
     .badge {
-      display: inline-block;
-      padding: 6px 16px;
-      background: #ecfdf5;
-      border: 1px solid var(--accent-green);
-      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      background: var(--accent-soft);
+      border: 1px solid #a7f3d0;
+      border-radius: 999px;
       color: var(--accent-darkgreen);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.5px;
       margin-bottom: 24px;
       text-transform: uppercase;
     }
 
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     h1 {
-      font-size: 2.8rem;
-      line-height: 1.25;
+      font-size: 3rem;
+      line-height: 1.18;
       margin-bottom: 20px;
-      font-weight: 800;
+      font-weight: 850;
+      letter-spacing: -0.02em;
       color: var(--text-main);
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .hero p {
-      font-size: 1.2rem;
+      font-size: 1.22rem;
       color: var(--text-muted);
       max-width: 800px;
+      margin: 0 auto 36px auto;
+    }
+
+    /* Key Metrics Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 1000px;
+      margin: 0 auto 56px auto;
+    }
+
+    .stat-item {
+      background: var(--bg-white);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-darkgreen);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Interactive 3D Section */
+    .explorer-section {
+      background: var(--bg-white);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 72px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .explorer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .explorer-header h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+    }
+
+    .explorer-header p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+    }
+
+    /* Module Selection Pills */
+    .part-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .part-btn {
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--bg-light);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .part-btn:hover {
+      border-color: var(--accent-green);
+      background: var(--accent-soft);
+    }
+
+    .part-btn.active {
+      background: var(--accent-green);
+      color: #ffffff;
+      border-color: var(--accent-green);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .part-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.1);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .part-btn.active .part-num {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    /* 3D Layout Grid */
+    .explorer-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      height: 520px;
+      background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+
+    #three-canvas-container {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    #three-canvas-container:active {
+      cursor: grabbing;
+    }
+
+    /* Floating Controls inside 3D Viewer */
+    .canvas-toolbar {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+      flex-wrap: wrap;
+    }
+
+    .tool-btn {
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tool-btn:hover {
+      background: #ffffff;
+      border-color: var(--accent-green);
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.75);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* Inspector Side Panel */
+    .inspector-card {
+      background: var(--bg-light);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .inspector-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--accent-soft);
+      color: var(--accent-darkgreen);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .inspector-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .inspector-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .spec-list {
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      margin-bottom: 20px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--card-border);
+      font-size: 0.88rem;
+    }
+
+    .spec-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .spec-val {
+      color: var(--text-main);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .inspector-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    .inspector-nav button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--bg-white);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .inspector-nav button:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-darkgreen);
+    }
+
+    /* Section Headings */
+    .section-head {
+      text-align: center;
+      max-width: 760px;
       margin: 0 auto 40px auto;
     }
 
-    /* 3D-Viewer Card */
-    .viewer-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 60px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    .section-head h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
     }
 
-    model-viewer {
-      width: 100%;
-      height: 480px;
-      background-color: #f1f5f9;
-      border-radius: 12px;
+    .section-head p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
     }
 
-    .viewer-hint {
-      margin-top: 12px;
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      text-align: center;
-    }
-
-    /* Section Grid */
-    .grid {
+    /* Grid Cards */
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 24px;
-      margin-bottom: 60px;
+      margin-bottom: 72px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+      margin-bottom: 72px;
     }
 
     .card {
-      background: var(--card-bg);
+      background: var(--bg-white);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent-darkgreen);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 18px;
     }
 
     .card h3 {
       font-size: 1.3rem;
-      margin-bottom: 12px;
-      color: var(--accent-darkgreen);
+      margin-bottom: 10px;
+      color: var(--text-main);
     }
 
     .card p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.96rem;
     }
 
-    /* Process Section */
-    .process-section {
-      background: var(--card-bg);
+    /* Smart Hybrid Sourcing Section */
+    .sourcing-box {
+      background: var(--bg-white);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 40px;
-      margin-bottom: 60px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+      margin-bottom: 72px;
+      box-shadow: var(--shadow-sm);
     }
 
-    .process-section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 16px;
-      color: var(--text-main);
-    }
-
-    .process-grid {
+    .sourcing-cols {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      align-items: center;
+      gap: 28px;
       margin-top: 24px;
     }
 
-    @media (max-width: 768px) {
-      .process-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 2rem; }
-      .hero-logo { max-width: 280px; }
-    }
-
-    video {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-
-    .process-steps {
-      list-style: none;
-    }
-
-    .process-steps li {
-      margin-bottom: 18px;
-      padding-left: 28px;
-      position: relative;
-      color: var(--text-muted);
-    }
-
-    .process-steps li::before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: var(--accent-green);
-      font-weight: bold;
-    }
-
-    .process-steps strong {
-      color: var(--text-main);
-    }
-
-    /* Roadmap / Strategy */
-    .roadmap-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .roadmap-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 18px;
-      background: #f1f5f9;
-      border-radius: 10px;
+    .sourcing-col {
+      padding: 24px;
+      border-radius: 14px;
+      background: var(--bg-light);
       border-left: 4px solid var(--accent-green);
     }
 
-    .roadmap-tag {
-      font-weight: bold;
+    .sourcing-col h4 {
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .sourcing-col ul {
+      list-style: none;
+    }
+
+    .sourcing-col li {
+      padding: 6px 0 6px 24px;
+      position: relative;
+      font-size: 0.93rem;
+      color: var(--text-muted);
+    }
+
+    .sourcing-col li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
       color: var(--accent-darkgreen);
-      font-size: 0.9rem;
-      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    /* Roadmap Section */
+    .roadmap-box {
+      background: var(--bg-white);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 72px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 20px;
+      padding: 22px;
+      background: var(--bg-light);
+      border-radius: 14px;
+      border-left: 4px solid var(--accent-green);
+      align-items: center;
+    }
+
+    .roadmap-tag {
+      font-weight: 800;
+      color: var(--accent-darkgreen);
+      font-size: 0.95rem;
     }
 
     /* Investor CTA */
     .cta-box {
       text-align: center;
-      background: #ecfdf5;
-      border: 1px solid var(--accent-green);
-      border-radius: 16px;
-      padding: 50px 20px;
-      margin-bottom: 60px;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1px solid #6ee7b7;
+      border-radius: 24px;
+      padding: 60px 28px;
+      margin-bottom: 64px;
     }
 
     .cta-box h2 {
-      font-size: 2rem;
-      margin-bottom: 12px;
+      font-size: 2.2rem;
+      margin-bottom: 14px;
       color: var(--text-main);
     }
 
     .cta-box p {
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 24px auto;
+      max-width: 640px;
+      margin: 0 auto 28px auto;
+      font-size: 1.08rem;
     }
 
     .btn {
       display: inline-block;
-      padding: 14px 32px;
+      padding: 15px 36px;
       background: var(--accent-green);
       color: #ffffff;
       font-weight: 700;
-      border-radius: 30px;
+      font-size: 1rem;
+      border-radius: 999px;
       text-decoration: none;
+      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
       transition: background-color 0.2s, transform 0.2s;
     }
 
@@ -294,148 +628,939 @@
     footer {
       text-align: center;
       color: var(--text-dim);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       padding: 40px 0;
       border-top: 1px solid var(--card-border);
+    }
+
+    @media (max-width: 980px) {
+      .explorer-grid {
+        grid-template-columns: 1fr;
+      }
+      .canvas-wrapper {
+        height: 430px;
+      }
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sourcing-cols {
+        grid-template-columns: 1fr;
+      }
+      .roadmap-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .nav-links {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Header / Navigation -->
-    <nav>
-      <div class="logo-container">
-        <img src="logo.png" alt="Rhypolysis Logo" class="nav-logo-img">
-      </div>
-      <div class="nav-links">
-        <a href="#technologie">Technologie</a>
-        <a href="#geschaeftsmodell">Geschäftsmodell</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#investoren">Investoren</a>
-      </div>
-    </nav>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#">
+          <img src="logo.png" alt="Rhypolysis Logo" class="nav-logo-img" onerror="this.style.display='none'">
+        </a>
+        <div class="nav-links">
+          <a href="#explorer">3D-Container-Modell</a>
+          <a href="#problem">Problem & Lösung</a>
+          <a href="#geschaeftsmodell">Ertragsmodell</a>
+          <a href="#sourcing">Qualität & Normen</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="mailto:rhypolysis@gmail.com" class="nav-cta">Kontakt aufnehmen</a>
+        </div>
+      </nav>
+    </div>
+  </header>
 
+  <div class="container">
     <!-- Hero Section -->
     <section class="hero">
-      <!-- Großes zentriertes Logo am Anfang -->
-      <img src="logo.png" alt="Rhypolysis Logo" class="hero-logo">
+      <img src="logo.png" alt="Rhypolysis Logo" class="hero-logo" onerror="this.style.display='none'">
       
-      <div class="badge">Phase 1: Fully Engineered Digital Twin</div>
-      <h1>Vollautomatische, mobile Müllverwertungsanlage für Restmüll</h1>
-      <p>Rhypolysis ist die dezentrale All-in-One-Lösung für unvorsortierten Restmüll. Von der automatischen Zerkleinerung und Wertstoff-Abscheidung bis zur thermischen Verwertung – vollautomatisch integriert in einem 40-Fuß-High-Cube Container.</p>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Phase 1: Digitales Prototyping & Konzept-Engineering
+      </div>
+      <h1>Vollautomatische, mobile Müllverwertungsanlage für unvorsortierten Restmüll</h1>
+      <p>Rhypolysis bringt die Abfallverwertung direkt dorthin, wo Müllverbrennungsanlagen fehlen. Zerkleinerung, Metall-Recycling, Vortrocknung und autotherme Pyrolyse – schlüsselfertig vereint in einem 40-Fuß-High-Cube-Container.</p>
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value">0 %</div>
+          <div class="stat-label">Vorsortierung nötig</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">40-Fuß HC</div>
+          <div class="stat-label">Standard ISO-Container</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">100 %</div>
+          <div class="stat-label">Fe & Al Metall-Abscheidung</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Autotherm</div>
+          <div class="stat-label">Energieautarker Betrieb</div>
+        </div>
+      </div>
     </section>
 
-    <!-- 3D Prototyp Viewer -->
-    <div class="viewer-card" id="technologie">
-      <model-viewer 
-        src="shredder.glb" 
-        alt="Rhypolysis Shredder 3D Prototyp" 
-        auto-rotate 
-        camera-controls 
-        shadow-intensity="1"
-        exposure="1"
-        ar>
-      </model-viewer>
-      <div class="viewer-hint">🖱️ Interaktiver 3D-Digital-Twin: Klicken und ziehen, um das Modul zu drehen und zu zoomen.</div>
+    <!-- INTERACTIVE 3D CONTAINER EXPLORER -->
+    <section class="explorer-section" id="explorer">
+      <div class="explorer-header">
+        <div>
+          <h2>Interaktives 3D-Anlagenmodell (40-Fuß-Container)</h2>
+          <p>Klicke direkt im 3D-Raum auf ein Bauteil oder wähle oben eine Station aus, um die Kamera-Perspektive zu wechseln.</p>
+        </div>
+      </div>
+
+      <!-- Schnellauswahl-Leiste für alle Bauteile -->
+      <div class="part-selector">
+        <button class="part-btn active" data-part="all" onclick="selectPart('all')">
+          <span>🔍 Gesamtübersicht</span>
+        </button>
+        <button class="part-btn" data-part="shredder" onclick="selectPart('shredder')">
+          <span class="part-num">1</span> UNTHA RS40 Schredder
+        </button>
+        <button class="part-btn" data-part="separator" onclick="selectPart('separator')">
+          <span class="part-num">2</span> Wirbelstromabscheider
+        </button>
+        <button class="part-btn" data-part="dryer" onclick="selectPart('dryer')">
+          <span class="part-num">3</span> Thermische Vortrocknung
+        </button>
+        <button class="part-btn" data-part="reactor" onclick="selectPart('reactor')">
+          <span class="part-num">4</span> Pyrolyse-Reaktor
+        </button>
+        <button class="part-btn" data-part="syngas" onclick="selectPart('syngas')">
+          <span class="part-num">5</span> Synthesegas & Energie
+        </button>
+        <button class="part-btn" data-part="output" onclick="selectPart('output')">
+          <span class="part-num">6</span> Koks-Brikett-Austrag
+        </button>
+      </div>
+
+      <div class="explorer-grid">
+        <!-- 3D Viewport -->
+        <div class="canvas-wrapper">
+          <div class="canvas-toolbar">
+            <button class="tool-btn" id="btn-shell" onclick="toggleContainerShell()">📦 Container-Hülle: Sichtbar</button>
+            <button class="tool-btn" id="btn-anim" onclick="toggleAnimation()">⚙️ Prozess-Animation: Aktiv</button>
+            <button class="tool-btn" onclick="selectPart('all')">🔄 Kamera zurücksetzen</button>
+          </div>
+          <div id="three-canvas-container"></div>
+          <div class="canvas-hint">🖱️ Links klicken: Bauteil wählen & drehen | Rechts ziehen: Verschieben | Mausrad: Zoomen</div>
+        </div>
+
+        <!-- Detail-Inspektor rechts -->
+        <div class="inspector-card">
+          <div>
+            <span class="inspector-tag" id="info-tag">Gesamtanlage</span>
+            <h3 class="inspector-title" id="info-title">40-Fuß-High-Cube Container-System</h3>
+            <p class="inspector-desc" id="info-desc">
+              Alle sechs Prozessstufen sind auf 12,19 Metern Länge exakt aufeinander abgestimmt. Der unvorsortierte Restmüll durchläuft die Anlage vollautomatisch von links (Aufgabetrichter) nach rechts (Energie- & Koks-Austrag).
+            </p>
+
+            <div class="spec-list" id="info-specs">
+              <div class="spec-row">
+                <span class="spec-label">Außenmaße (L × B × H)</span>
+                <span class="spec-val">12,19 m × 2,44 m × 2,90 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Input-Material</span>
+                <span class="spec-val">Unvorsortierter Rest- & Mischmüll</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Prozessführung</span>
+                <span class="spec-val">Vollautomatisch (SPS-gesteuert)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Zertifizierungs-Standard</span>
+                <span class="spec-val">CE & ATEX-konforme Kernmodule</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="inspector-nav">
+            <button onclick="cyclePart(-1)">← Vorheriges Bauteil</button>
+            <button onclick="cyclePart(1)">Nächstes Bauteil →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem & Lösung -->
+    <div class="section-head" id="problem">
+      <h2>Warum Regionen wie Griechenland jetzt Lösungen brauchen</h2>
+      <p>In vielen Ländern Süd- und Osteuropas fehlen Müllverbrennungsanlagen komplett – sowohl auf dem Festland als auch auf Urlaubsinseln wie Korfu.</p>
     </div>
 
-    <!-- Die 3 Kern-Pfeiler -->
-    <div class="grid">
+    <div class="grid-3">
       <div class="card">
-        <h3>Keine Vorsortierung</h3>
-        <p>Herkömmliche Anlagen verlangen getrennten Müll. Das Rhypolysis-System ist speziell für <strong>unvorsortierten Rest- und Mischmüll</strong> konstruiert.</p>
+        <div class="card-icon">!</div>
+        <h3>Das Problem: Deponien & Schiffstransporte</h3>
+        <p>Ohne lokale Verwertungsanlagen wird Restmüll entweder auf überlasteten Halden vergraben oder für Millionenbeträge auf Schiffen und LKWs in andere Regionen und Länder transportiert.</p>
       </div>
       <div class="card">
-        <h3>100% Mobil & Modular</h3>
-        <p>Integriert in ein standardisiertes <strong>40-Fuß-High-Cube-Container-Format</strong>. Einfacher Schiffs- und LKW-Transport direkt an den Einsatzort.</p>
+        <div class="card-icon">✓</div>
+        <h3>Der USP: Keine Vorsortierung</h3>
+        <p>Klassische Pyrolyse-Anlagen funktionieren nur mit sauber getrenntem Plastikmüll. Rhypolysis verarbeitet <strong>normalen, unvorsortierten Haus- und Restmüll</strong> direkt vor Ort.</p>
       </div>
       <div class="card">
-        <h3>Vollautomatisch</h3>
-        <p>Integrierte Sensorik und Steuerung verarbeiten den Restmüll von der Zerkleinerung bis zur thermischen Verwertung im autothermen Dauerbetrieb.</p>
-      </div>
-    </div>
-
-    <!-- Prozess-Simulation & Video -->
-    <div class="process-section">
-      <h2>Der vollautomatische Prozessablauf</h2>
-      <p style="color: var(--text-muted);">Alle Komponenten wurden virtuell im 3D-CAD-Modell simuliert, um maximale Volumeneffizienz im Container zu garantieren:</p>
-      
-      <div class="process-grid">
-        <video autoplay loop muted playsinline>
-          <source src="shredder-loop.mp4" type="video/mp4">
-        </video>
-        
-        <ul class="process-steps">
-          <li><strong>1. Zerkleinerung:</strong> UNTHA RS40 Vierwellen-Schredder zerkleinert unvorsortierten Restmüll auf definierte Korngröße.</li>
-          <li><strong>2. Wertstoff-Abscheidung:</strong> Integrierter Wirbelstromabscheider trennt Eisen- und Aluminium-Metalle zu 100% sauber ab.</li>
-          <li><strong>3. Vortrocknung:</strong> Die Abwärme trocknet feuchtes Input-Material für maximale thermische Effizienz.</li>
-          <li><strong>4. Pyrolyse-Reaktor:</strong> Unter Sauerstoffausschluss entsteht hochwertiges Synthesegas sowie Koks-Briketts.</li>
-        </ul>
+        <div class="card-icon">⚡</div>
+        <h3>Autothermer Kreislauf</h3>
+        <p>Nach dem Aufheizen nutzt die Anlage das selbst erzeugte Synthesegas zur Befeuerung des Reaktors und der Vortrocknung. Das System arbeitet dadurch im Dauerbetrieb weitgehend energieautark.</p>
       </div>
     </div>
 
-    <!-- Geschäftsmodell -->
-    <div class="grid" id="geschaeftsmodell">
+    <!-- Geschäftsmodell (3 Säulen) -->
+    <div class="section-head" id="geschaeftsmodell">
+      <h2>Auf 3 Wegen Umsatz generieren</h2>
+      <p>Das Geschäftsmodell von Rhypolysis kombiniert planbare Anlagen-Erlöse mit laufenden Rohstoff- und Energieeinnahmen.</p>
+    </div>
+
+    <div class="grid-3">
       <div class="card">
-        <h3>1. Container-Verkauf & Leasing</h3>
-        <p>Direktverkauf oder Leasingverträge an Inselgemeinden (z. B. Korfu) und Resort-Betreiber, die unter teuren Mülltransporten aufs Festland leiden.</p>
+        <div class="card-icon">1</div>
+        <h3>Verkauf & Saison-Leasing</h3>
+        <p>Direktverkauf oder flexible Leasingmodelle der schlüsselfertigen Container an Inselgemeinden, Kommunen ohne eigene Verbrennungsanlage und große Hotelresorts.</p>
       </div>
       <div class="card">
-        <h3>2. Metall-Recycling</h3>
-        <p>Zusätzliche Einnahmequelle durch den Verkauf der vorab sauber getrennten Reinflux-Metalle (Eisen & Aluminium) an Recycling-Betriebe.</p>
+        <div class="card-icon">2</div>
+        <h3>Verkauf von Recycling-Metallen</h3>
+        <p>Vor der thermischen Verwertung zieht der integrierte Abscheider Eisen und wertvolles Aluminium zu 100 % sortenrein heraus. Diese Metalle werden direkt an Recyclingbetriebe verkauft.</p>
       </div>
       <div class="card">
-        <h3>3. Nebenprodukte & Koks</h3>
-        <p>Vertrieb von hochwertigen Koks-Briketts als Brennstoff oder Bodenverbesserer sowie die Nutzung erzeugter Prozessenergie.</p>
+        <div class="card-icon">3</div>
+        <h3>Energie & Koks-Briketts</h3>
+        <p>Einnahmen durch die Nutzung des Überschuss-Synthesegases zur Strom-/Wärmeerzeugung sowie durch den Verkauf der gepressten Koks-Briketts als industrieller Brennstoff.</p>
+      </div>
+    </div>
+
+    <!-- Smart Hybrid Sourcing -->
+    <div class="sourcing-box" id="sourcing">
+      <h2>Smart Hybrid Sourcing: EU-Sicherheit trifft Kosteneffizienz</h2>
+      <p style="color: var(--text-muted); margin-top: 6px;">
+        Um die strengen europäischen CE- und ATEX-Explosionsschutznormen problemlos zu erfüllen und gleichzeitig die Baukosten des Prototypen (200'000 – 380'000 CHF) schlank zu halten, setzt Rhypolysis auf eine zweistufige Beschaffungsstrategie:
+      </p>
+
+      <div class="sourcing-cols">
+        <div class="sourcing-col">
+          <h4>🛡️ Sicherheitskritische Kernmodule (EU / CE / ATEX)</h4>
+          <ul>
+            <li><strong>Vierwellen-Schredder (z. B. UNTHA RS40):</strong> Höchste Ausfallsicherheit bei Störstoffen im Restmüll & schnelle Ersatzteilversorgung in Europa.</li>
+            <li><strong>Pyrolyse-Reaktor & Gassystem:</strong> Volle ATEX-Explosionsschutz- und Druckgeräte-Zertifizierung für problemlose Genehmigungen in der EU.</li>
+            <li><strong>SPS-Steuerung, Sensorik & Not-Aus:</strong> Geprüfte Schaltschränke und Gasüberwachung nach europäischen EN-Sicherheitsstandards.</li>
+          </ul>
+        </div>
+        <div class="sourcing-col">
+          <h4>⚙️ Kostenoptimierte Peripherie (Global Sourcing)</h4>
+          <ul>
+            <li><strong>40-Fuß-High-Cube-Container:</strong> Standardisierter ISO-Stahlcontainer mit internationaler CSC-Frachtzulassung.</li>
+            <li><strong>Passiver Stahlbau & Gestelle:</strong> Montagepodeste, Aufgabetrichter, Rutschen und Halterungen nach eigenen CAD-Zeichnungen.</li>
+            <li><strong>Mechanische Förderbänder & Gehäuse:</strong> Robuste Standardkomponenten ohne komplexe Explosionsschutz-Anforderungen.</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- Roadmap -->
-    <div class="process-section" id="roadmap">
-      <h2>Technologie- & Finanzierungs-Roadmap</h2>
-      <p style="color: var(--text-muted);">Warum wir zuerst auf ein vollständiges Digital-Twin-Engineering setzen:</p>
+    <div class="roadmap-box" id="roadmap">
+      <h2>Entwicklungs- & Finanzierungs-Roadmap</h2>
+      <p style="color: var(--text-muted); margin-top: 6px;">
+        Kapitaleffiziente Entwicklung: Zuerst vollständige digitale Planung am Computer – der physische Bau startet gezielt nach Abschluss der Seed-Finanzierung.
+      </p>
 
       <div class="roadmap-list">
         <div class="roadmap-item">
-          <div class="roadmap-tag">Phase 1 (Aktuell)</div>
+          <div class="roadmap-tag">Schritt 1 (Aktuell)</div>
           <div>
-            <strong>Digital Twin & Pre-Feasibility (Bootstrapping)</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Vollständige CAD-Modellierung in Blender, Simulation des Müllstroms und Optimierung der Schnittstellen. Kapitaleffiziente Vorbereitung ohne Hardware-Fehlinvestitionen.</span>
+            <strong>Konzept-Engineering & Ausarbeitung des Digitalen Prototypen</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.93rem;">Detaillierte 3D-Konstruktion aller Maschinen, Platzverhältnisse und des Müllstroms im Container. Vollständige technische Vorplanung ohne vorzeitiges Verbrennen von Hardware-Kapital.</span>
           </div>
         </div>
 
         <div class="roadmap-item">
-          <div class="roadmap-tag">Phase 2 (Seed Funding)</div>
+          <div class="roadmap-tag">Schritt 2 (Seed-Runde)</div>
           <div>
-            <strong>Prototypenbau & Pilotierung (250'000 – 380'000 CHF)</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Einwerbung von Kapital (Business Angels & EU-Förderfonds) für den physischen Bau der 40-Fuß-Container-Anlage und Einholung der CE/ATEX-Zertifizierungen.</span>
+            <strong>Investoren-Einstieg & Bau des 1. physischen Test-Containers (200'000 – 380'000 CHF)</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.93rem;">Sobald der digitale Bauplan abgeschlossen ist und Business Angels / Förderpartner an Bord sind, erfolgt die Beschaffung der Komponenten und der Bau des ersten realen Pilot-Containers inkl. CE/ATEX-Abnahme.</span>
           </div>
         </div>
 
         <div class="roadmap-item">
-          <div class="roadmap-tag">Phase 3 (Serienstart)</div>
+          <div class="roadmap-tag">Schritt 3 (Markteintritt)</div>
           <div>
-            <strong>Rollout & Skalierung</strong><br>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Reallabor-Testbetrieb auf einer Partner-Insel und Start der Serienfertigung für europäische Inselregionen und Hotelresorts.</span>
+            <strong>Pilotbetrieb vor Ort & Skalierung</strong><br>
+            <span style="color: var(--text-muted); font-size: 0.93rem;">Praxistest unter realen Bedingungen in einer Zielregion (z. B. Griechenland / Korfu) und anschließender Start von Verkauf und Leasing an Gemeinden und Resorts.</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Investor CTA -->
+    <!-- Investor Call-to-Action -->
     <div class="cta-box" id="investoren">
-      <h2>Interesse an der Seed-Finanzierungsrunde?</h2>
-      <p>Wir suchen strategische Business Angels und CleanTech-Partner für die Umsetzung des ersten physischen Pilot-Reaktors.</p>
-      <a href="mailto:rhypolysis@gmail.com" class="btn">Pitch Deck & Dokumentation anfordern</a>
+      <h2>Interesse an einem Einstieg als Investor oder Partner?</h2>
+      <p>Ich suche Business Angels, Mentoren und CleanTech-Partner, um nach der digitalen Detailplanung gemeinsam den ersten physischen Rhypolysis-Testcontainer zu realisieren.</p>
+      <a href="mailto:rhypolysis@gmail.com?subject=Anfrage%20Rhypolysis%20Pitch%20%26%20Investoren-Informationen" class="btn">Direkt Kontakt aufnehmen (rhypolysis@gmail.com)</a>
     </div>
 
-    <!-- Footer -->
     <footer>
-      <p>&copy; 2026 Rhypolysis Systems. All rights reserved. | Dezentrale Recycling-Lösungen für Restmüll</p>
+      <p>© 2026 Rhypolysis Systems – Leon Schürch | Kontakt: <a href="mailto:rhypolysis@gmail.com" style="color: var(--accent-darkgreen); text-decoration: none; font-weight: 600;">rhypolysis@gmail.com</a></p>
     </footer>
-
   </div>
+
+  <!-- ================================================================= -->
+  <!-- THREE.JS 3D-CONTAINER & INTERAKTIVE BAUTEIL-LOGIK                 -->
+  <!-- ================================================================= -->
+  <script>
+    // Datenbank aller Bauteile mit Kamera-Perspektiven und Erklärungen
+    const PART_DATA = {
+      all: {
+        tag: "Gesamtanlage",
+        title: "40-Fuß-High-Cube Container-System",
+        desc: "Alle sechs Prozessstufen sind auf 12,19 Metern Länge exakt hintereinander geschaltet. Der unvorsortierte Restmüll wird links aufgegeben und durchläuft vollautomatisch Zerkleinerung, Metallabscheidung, Trocknung und Pyrolyse.",
+        specs: [
+          ["Außenmaße (L × B × H)", "12,19 m × 2,44 m × 2,90 m"],
+          ["Input-Material", "Unvorsortierter Rest- & Mischmüll"],
+          ["Steuerung", "Vollautomatisch über zentrale SPS"],
+          ["Sourcing-Strategie", "Smart Hybrid (EU-Kernmodule)"]
+        ],
+        camPos: { x: 0, y: 4.2, z: 11.5 },
+        lookAt: { x: 0, y: 0.2, z: 0 }
+      },
+      shredder: {
+        tag: "Station 1 • Zerkleinerung",
+        title: "UNTHA RS40 Vierwellen-Schredder",
+        desc: "Der unvorsortierte Restmüll fällt über den Aufgabetrichter direkt in das kraftvolle Vierwellen-Schneidwerk. Es zerkleinert selbst zähe Mischabfälle zuverlässig auf eine homogene Korngröße für den weiteren Prozess.",
+        specs: [
+          ["Bauteil-Typ", "Industrieller 4-Wellen-Zerkleinerer"],
+          ["Aufgabe", "Zerkleinerung ohne Vorsortierung"],
+          ["Schutzfunktion", "Automatischer Störstoff-Reversierlauf"],
+          ["Herkunft / Norm", "EU-Markenmodul (CE-zertifiziert)"]
+        ],
+        camPos: { x: -4.8, y: 2.3, z: 4.5 },
+        lookAt: { x: -4.5, y: 0.4, z: 0 }
+      },
+      separator: {
+        tag: "Station 2 • Wertstoff-Recycling",
+        title: "Überbandmagnet & Wirbelstromabscheider",
+        desc: "Unmittelbar nach dem Schredder läuft das Material über ein Förderband. Ein Hochleistungsmagnet und ein Wirbelstromrotor trennen Eisen- (Fe) und Aluminiumteile (Al) zu 100 % sauber in separate Sammelbehälter ab.",
+        specs: [
+          ["Abscheidung", "Eisen (Fe) & Nichteisenmetalle (Al)"],
+          ["Reinheitsgrad", "Sortenrein für direkten Weiterverkauf"],
+          ["Zusatznutzen", "Schützt den Reaktor vor Metallblockaden"],
+          ["Einnahmequelle", "Säule 2: Rohstoff-Verkauf an Recycler"]
+        ],
+        camPos: { x: -2.4, y: 2.0, z: 4.2 },
+        lookAt: { x: -2.3, y: 0.0, z: 0 }
+      },
+      dryer: {
+        tag: "Station 3 • Thermische Vorbereitung",
+        title: "Abwärme-Vortrocknungstunnel",
+        desc: "Haus- und Restmüll enthält oft viel Feuchtigkeit. In dieser isolierten Förderschnecke nutzt die Anlage die heiße Abwärme des Pyrolyse-Reaktors, um das Material vorzutrocknen. Das steigert die Energieeffizienz massiv.",
+        specs: [
+          ["Wärmequelle", "100 % interne Reaktor-Abwärme"],
+          ["Mechanik", "Geschlossene Doppelwand-Förderschnecke"],
+          ["Effekt", "Hoher Heizwert im nachfolgenden Reaktor"],
+          ["Energiebedarf", "Kein externer Brennstoff nötig"]
+        ],
+        camPos: { x: -0.2, y: 1.8, z: 4.2 },
+        lookAt: { x: -0.2, y: -0.1, z: 0 }
+      },
+      reactor: {
+        tag: "Station 4 • Kernprozess",
+        title: "Autothermer Pyrolyse-Drehrohrreaktor",
+        desc: "Das Herzstück der Anlage: Unter komplettem Sauerstoffausschluss wird der getrocknete Restmüll bei ca. 450–650 °C thermisch gespalten. Es entsteht keine offene Müllverbrennung, sondern sauberes Synthesegas und Kohlenstoff-Koks.",
+        specs: [
+          ["Prozesstemperatur", "450 °C – 650 °C (Sauerstofffrei)"],
+          ["Betriebsart", "Autotherm (beheizt durch eigenes Syngas)"],
+          ["Sicherheit", "ATEX-Explosionsschutz & Drucküberwachung"],
+          ["Herkunft", "Zertifiziertes EU-Spezialmodul"]
+        ],
+        camPos: { x: 2.2, y: 2.1, z: 4.5 },
+        lookAt: { x: 2.1, y: 0.1, z: 0 }
+      },
+      syngas: {
+        tag: "Station 5 • Energie & Steuerung",
+        title: "Synthesegas-Wäscher, Brenner & SPS",
+        desc: "Das im Reaktor entstehende Synthesegas wird im Zyklon gereinigt. Ein Teil hält den Reaktor autotherm auf Temperatur, der Überschuss liefert nutzbare Energie. Daneben sitzt der CE-geprüfte SPS-Schaltschrank.",
+        specs: [
+          ["Hauptfunktion", "Gasreinigung & Rückführung zum Brenner"],
+          ["Eigenversorgung", "Hält den Prozess ohne Fremdenergie am Laufen"],
+          ["Steuerung", "Vollautomatische 24/7 Sensor-Überwachung"],
+          ["Einnahmequelle", "Säule 3: Überschuss-Energie"]
+        ],
+        camPos: { x: 3.6, y: 2.2, z: 4.2 },
+        lookAt: { x: 3.5, y: 0.3, z: 0 }
+      },
+      output: {
+        tag: "Station 6 • Feststoff-Veredelung",
+        title: "Kühlschnecke & Koks-Brikettierung",
+        desc: "Am Ende des Reaktors wird der feste Kohlenstoff-Rest (Pyrolysekoks) über eine wassergekühlte Schnecke sicher ausgetragen und direkt zu sauberen, transportfähigen Koks-Briketts gepresst.",
+        specs: [
+          ["Endprodukt", "Hochwertige Koks-Briketts / Biochar"],
+          ["Volumenreduktion", "Reduziert das Müllvolumen um ca. 85–90 %"],
+          ["Anwendung", "Industriebrennstoff oder Bodenverbesserer"],
+          ["Einnahmequelle", "Säule 3: Brikett-Verkauf"]
+        ],
+        camPos: { x: 5.0, y: 1.9, z: 4.2 },
+        lookAt: { x: 4.7, y: -0.2, z: 0 }
+      }
+    };
+
+    const PART_ORDER = ['all', 'shredder', 'separator', 'dryer', 'reactor', 'syngas', 'output'];
+    let currentPartKey = 'all';
+
+    // Three.js Globale Variablen
+    let scene, camera, renderer, controls, raycaster, mouse;
+    const partGroups = {};
+    const clickableMeshes = [];
+    let containerShellGroup;
+    let shellVisible = true;
+    let animationActive = true;
+
+    // Animierte Unterobjekte
+    let shredderRollers = [];
+    let reactorDrum = null;
+    let eddyRotor = null;
+    let wasteParticles = [];
+
+    // Kamera-Zielwerte für sanften Übergang
+    const targetCamPos = new THREE.Vector3(0, 4.2, 11.5);
+    const targetLookAt = new THREE.Vector3(0, 0.2, 0);
+
+    function initThreeJS() {
+      const container = document.getElementById('three-canvas-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf1f5f9);
+
+      camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+      camera.position.set(0, 4.2, 11.5);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.maxPolarAngle = Math.PI / 2 + 0.08;
+      controls.minDistance = 2.5;
+      controls.maxDistance = 22;
+
+      // Beleuchtung
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
+      dirLight.position.set(8, 14, 10);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 2048;
+      dirLight.shadow.mapSize.height = 2048;
+      scene.add(dirLight);
+
+      const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.45);
+      fillLight.position.set(-10, 6, -8);
+      scene.add(fillLight);
+
+      // Dezentes Bodengitter
+      const gridHelper = new THREE.GridHelper(24, 24, 0xcbd5e1, 0xe2e8f0);
+      gridHelper.position.y = -1.55;
+      scene.add(gridHelper);
+
+      // 1. 40-Fuß-High-Cube Container bauen (12m x 2.4m x 2.9m -> skaliert als 12 x 2.4 x 2.9 Einheiten)
+      buildContainerFrame();
+
+      // 2. Alle 6 Prozessmodule in korrekter Reihenfolge aufbauen
+      buildShredderModule();   // Station 1 (x: -4.5)
+      buildSeparatorModule();  // Station 2 (x: -2.3)
+      buildDryerModule();      // Station 3 (x: -0.2)
+      buildReactorModule();    // Station 4 (x: +2.1)
+      buildSyngasModule();     // Station 5 (x: +3.5)
+      buildOutputModule();     // Station 6 (x: +4.8)
+
+      // 3. Bewegte Müll-/Material-Partikel entlang der Linie
+      buildMaterialFlowParticles();
+
+      // Raycaster für Klicks auf 3D-Bauteile
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+
+      let pointerDownPos = { x: 0, y: 0 };
+      renderer.domElement.addEventListener('pointerdown', (e) => {
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+      });
+
+      renderer.domElement.addEventListener('pointerup', (e) => {
+        const moveDist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+        if (moveDist < 6) {
+          onCanvasClick(e);
+        }
+      });
+
+      window.addEventListener('resize', onWindowResize);
+      animate();
+    }
+
+    // Hilfsfunktion zum Registrieren klickbarer Bauteile
+    function registerPartMesh(mesh, partKey, baseColorHex) {
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.userData.partKey = partKey;
+      mesh.userData.baseColor = baseColorHex;
+      clickableMeshes.push(mesh);
+      return mesh;
+    }
+
+    // 40-Fuß-High-Cube-Container Rahmen & transparente Hülle
+    function buildContainerFrame() {
+      containerShellGroup = new THREE.Group();
+
+      // Massiver Stahlboden
+      const floorGeo = new THREE.BoxGeometry(12.2, 0.16, 2.44);
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7, metalness: 0.3 });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.position.set(0, -1.42, 0);
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Stahl-Rahmenbalken (12 Kanten des 40ft Containers)
+      const beamMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.6 });
+      const postGeo = new THREE.BoxGeometry(0.12, 2.9, 0.12);
+      const longBeamGeo = new THREE.BoxGeometry(12.2, 0.12, 0.12);
+      const shortBeamGeo = new THREE.BoxGeometry(0.12, 0.12, 2.44);
+
+      const cornersX = [-6.04, 6.04];
+      const cornersZ = [-1.16, 1.16];
+      cornersX.forEach(x => {
+        cornersZ.forEach(z => {
+          const post = new THREE.Mesh(postGeo, beamMat);
+          post.position.set(x, 0.03, z);
+          containerShellGroup.add(post);
+        });
+      });
+
+      [-1.35, 1.45].forEach(y => {
+        cornersZ.forEach(z => {
+          const beam = new THREE.Mesh(longBeamGeo, beamMat);
+          beam.position.set(0, y, z);
+          containerShellGroup.add(beam);
+        });
+        cornersX.forEach(x => {
+          const sBeam = new THREE.Mesh(shortBeamGeo, beamMat);
+          sBeam.position.set(x, y, 0);
+          containerShellGroup.add(sBeam);
+        });
+      });
+
+      // Halbtransparente Rückwand & Dach für echten Container-Look
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x64748b,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.DoubleSide
+      });
+
+      const backWall = new THREE.Mesh(new THREE.PlaneGeometry(12.0, 2.8), wallMat);
+      backWall.position.set(0, 0.05, -1.16);
+      containerShellGroup.add(backWall);
+
+      const roofWall = new THREE.Mesh(new THREE.PlaneGeometry(12.0, 2.3), wallMat);
+      roofWall.rotation.x = Math.PI / 2;
+      roofWall.position.set(0, 1.45, 0);
+      containerShellGroup.add(roofWall);
+
+      scene.add(containerShellGroup);
+    }
+
+    // STATION 1: UNTHA RS40 Schredder (Links im Container, x = -4.5)
+    function buildShredderModule() {
+      const group = new THREE.Group();
+      const pKey = 'shredder';
+
+      // Schweres Untergestell
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5, metalness: 0.5 });
+      const base = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.0, 1.6), baseMat), pKey, 0x475569);
+      base.position.set(-4.6, -0.84, 0);
+      group.add(base);
+
+      // Schneidkammer (UNTHA Grün/Türkis)
+      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0d9488, roughness: 0.35, metalness: 0.4 });
+      const body = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.75, 1.5), bodyMat), pKey, 0x0d9488);
+      body.position.set(-4.6, 0.04, 0);
+      group.add(body);
+
+      // Großer Aufgabetrichter oben
+      const hopperGeo = new THREE.CylinderGeometry(1.15, 0.75, 0.85, 4);
+      const hopperMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.4, metalness: 0.4 });
+      const hopper = registerPartMesh(new THREE.Mesh(hopperGeo, hopperMat), pKey, 0x0f766e);
+      hopper.rotation.y = Math.PI / 4;
+      hopper.position.set(-4.6, 0.84, 0);
+      group.add(hopper);
+
+      // 4 rotierende Schneidwellen im Inneren
+      const rollerMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8, roughness: 0.2 });
+      [-4.85, -4.35].forEach((rx, idx) => {
+        const roller = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.25, 12), rollerMat), pKey, 0xe2e8f0);
+        roller.rotation.x = Math.PI / 2;
+        roller.position.set(rx, 0.45, 0);
+        shredderRollers.push({ mesh: roller, dir: idx === 0 ? 1 : -1 });
+        group.add(roller);
+      });
+
+      // Seitlicher Hochleistungs-Elektromotor
+      const motorMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.6 });
+      const motor = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.7, 16), motorMat), pKey, 0x1e293b);
+      motor.rotation.z = Math.PI / 2;
+      motor.position.set(-5.55, 0.04, 0);
+      group.add(motor);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // STATION 2: Förderband & Wirbelstromabscheider (x = -2.3)
+    function buildSeparatorModule() {
+      const group = new THREE.Group();
+      const pKey = 'separator';
+
+      // Schräges Hauptförderband vom Schredder
+      const beltMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6, metalness: 0.3 });
+      const belt = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.18, 0.9), beltMat), pKey, 0x334155);
+      belt.position.set(-2.55, -0.35, 0);
+      belt.rotation.z = 0.18;
+      group.add(belt);
+
+      // Überband-Magnetabscheider (Signalgelb/Orange)
+      const magMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.35, metalness: 0.3 });
+      const magnetBox = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.42, 1.15), magMat), pKey, 0xf59e0b);
+      magnetBox.position.set(-2.5, 0.25, 0);
+      group.add(magnetBox);
+
+      // Wirbelstrom-Kopftrommel
+      const rotorMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, metalness: 0.5 });
+      eddyRotor = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.95, 16), rotorMat), pKey, 0x10b981);
+      eddyRotor.rotation.x = Math.PI / 2;
+      eddyRotor.position.set(-1.45, -0.15, 0);
+      group.add(eddyRotor);
+
+      // 2 Sammelbehälter für Fe und Al unter dem Abscheider
+      const binFeMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.5 });
+      const binFe = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.8), binFeMat), pKey, 0x64748b);
+      binFe.position.set(-2.7, -1.0, 0.55);
+      group.add(binFe);
+
+      const binAlMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.4 });
+      const binAl = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.8), binAlMat), pKey, 0x3b82f6);
+      binAl.position.set(-1.9, -1.0, 0.55);
+      group.add(binAl);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // STATION 3: Thermische Vortrocknung (x = -0.2)
+    function buildDryerModule() {
+      const group = new THREE.Group();
+      const pKey = 'dryer';
+
+      // Isolierter Trocknungstunnel
+      const tunnelMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.35, metalness: 0.6 });
+      const tunnel = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 2.0, 20), tunnelMat), pKey, 0x94a3b8);
+      tunnel.rotation.z = Math.PI / 2;
+      tunnel.position.set(-0.2, -0.15, 0);
+      group.add(tunnel);
+
+      // Stützrahmen
+      const standMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+      [-0.9, 0.5].forEach(sx => {
+        const leg = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.8, 0.9), standMat), pKey, 0x475569);
+        leg.position.set(sx, -0.9, 0);
+        group.add(leg);
+      });
+
+      // Warmluft-Rückführungsrohr vom Reaktor zum Trockner (Kupfer/Orange)
+      const pipeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, roughness: 0.4, metalness: 0.5 });
+      const heatPipe = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 2.3, 12), pipeMat), pKey, 0xea580c);
+      heatPipe.rotation.z = Math.PI / 2;
+      heatPipe.position.set(0.95, 0.55, -0.45);
+      group.add(heatPipe);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // STATION 4: Autothermer Pyrolyse-Reaktor (x = +2.1)
+    function buildReactorModule() {
+      const group = new THREE.Group();
+      const pKey = 'reactor';
+
+      // Massives Reaktor-Außenbett / Brennkammer
+      const chamberMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.45, metalness: 0.6 });
+      const chamber = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.85, 1.55), chamberMat), pKey, 0x334155);
+      chamber.position.set(2.1, -0.65, 0);
+      group.add(chamber);
+
+      // Rotierende Edelstahl-Pyrolysetrommel
+      const drumMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3, metalness: 0.7 });
+      reactorDrum = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 2.3, 24), drumMat), pKey, 0xd97706);
+      reactorDrum.rotation.z = Math.PI / 2;
+      reactorDrum.position.set(2.1, 0.1, 0);
+      group.add(reactorDrum);
+
+      // Kühl-/Isolierrippen auf dem Reaktor
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.8 });
+      [1.3, 2.1, 2.9].forEach(rx => {
+        const ring = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.74, 0.74, 0.12, 24), ringMat), pKey, 0x1e293b);
+        ring.rotation.z = Math.PI / 2;
+        ring.position.set(rx, 0.1, 0);
+        group.add(ring);
+      });
+
+      // Sichtfenster / Thermisches Leuchtband
+      const glowMat = new THREE.MeshStandardMaterial({
+        color: 0xf97316,
+        emissive: 0xea580c,
+        emissiveIntensity: 0.6
+      });
+      const glowStrip = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.14, 1.6), glowMat), pKey, 0xf97316);
+      glowStrip.position.set(2.1, -0.45, 0);
+      group.add(glowStrip);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // STATION 5: Synthesegas-Aufbereitung & SPS-Steuerung (x = +3.5)
+    function buildSyngasModule() {
+      const group = new THREE.Group();
+      const pKey = 'syngas';
+
+      // Gas-Zyklon / Wäscher-Turm (Grün)
+      const scrubberMat = new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.35, metalness: 0.4 });
+      const scrubber = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.85, 20), scrubberMat), pKey, 0x059669);
+      scrubber.position.set(3.65, 0.05, -0.45);
+      group.add(scrubber);
+
+      // Gas-Rückführleitung zum Reaktor-Brenner
+      const gasPipeMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, metalness: 0.6 });
+      const gasPipe = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.6, 12), gasPipeMat), pKey, 0x10b981);
+      gasPipe.rotation.z = Math.PI / 2;
+      gasPipe.position.set(2.85, 0.75, -0.45);
+      group.add(gasPipe);
+
+      // CE/ATEX SPS-Schaltschrank an der Vorderseite
+      const plcMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.4, metalness: 0.3 });
+      const plcCabinet = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.45, 0.5), plcMat), pKey, 0xe2e8f0);
+      plcCabinet.position.set(3.75, -0.35, 0.65);
+      group.add(plcCabinet);
+
+      // Grünes Status-Display am Schaltschrank
+      const screenMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x059669, emissiveIntensity: 0.5 });
+      const screen = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.28, 0.52), screenMat), pKey, 0x10b981);
+      screen.position.set(3.75, 0.05, 0.65);
+      group.add(screen);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // STATION 6: Koks-Kühlschnecke & Brikett-Austrag (x = +4.8)
+    function buildOutputModule() {
+      const group = new THREE.Group();
+      const pKey = 'output';
+
+      // Wassergekühlte Austragsschnecke
+      const augerMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.4, metalness: 0.6 });
+      const auger = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 1.7, 16), augerMat), pKey, 0x64748b);
+      auger.rotation.z = Math.PI / 2 - 0.25;
+      auger.position.set(4.15, -0.35, 0);
+      group.add(auger);
+
+      // Brikettierpresse & Koks-Brikett-Behälter
+      const pressMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.5 });
+      const bunker = registerPartMesh(new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.05, 1.25), pressMat), pKey, 0x1e293b);
+      bunker.position.set(5.15, -0.75, 0);
+      group.add(bunker);
+
+      // Koks-Briketts oben im Sammelbehälter
+      const cokeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+      const cokePile = registerPartMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.55, 0.3, 8), cokeMat), pKey, 0x0f172a);
+      cokePile.position.set(5.15, -0.15, 0);
+      group.add(cokePile);
+
+      partGroups[pKey] = group;
+      scene.add(group);
+    }
+
+    // Animierte Partikel, die den Materialfluss von links nach rechts symbolisieren
+    function buildMaterialFlowParticles() {
+      const pGeo = new THREE.SphereGeometry(0.08, 8, 8);
+      for (let i = 0; i < 18; i++) {
+        const pMat = new THREE.MeshStandardMaterial({
+          color: 0x10b981,
+          emissive: 0x059669,
+          emissiveIntensity: 0.4
+        });
+        const p = new THREE.Mesh(pGeo, pMat);
+        p.userData.progress = i / 18;
+        scene.add(p);
+        wasteParticles.push(p);
+      }
+    }
+
+    // Klick-Erkennung im 3D-Raum
+    function onCanvasClick(event) {
+      const container = document.getElementById('three-canvas-container');
+      const rect = container.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(clickableMeshes, false);
+
+      if (intersects.length > 0) {
+        const clickedPart = intersects[0].object.userData.partKey;
+        if (clickedPart) {
+          selectPart(clickedPart);
+        }
+      }
+    }
+
+    // Bauteil auswählen, hervorheben und Kamera sanft hinfliegen
+    function selectPart(partKey) {
+      currentPartKey = partKey;
+      const data = PART_DATA[partKey];
+
+      // 1. Buttons oben aktualisieren
+      document.querySelectorAll('.part-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-part') === partKey);
+      });
+
+      // 2. 3D-Highlighting anpassen
+      clickableMeshes.forEach(mesh => {
+        const mat = mesh.material;
+        if (partKey === 'all') {
+          mat.color.setHex(mesh.userData.baseColor);
+          mat.transparent = false;
+          mat.opacity = 1.0;
+          if (mat.emissive && mesh.userData.baseColor !== 0xf97316) {
+            mat.emissive.setHex(0x000000);
+          }
+        } else if (mesh.userData.partKey === partKey) {
+          mat.color.setHex(mesh.userData.baseColor);
+          mat.transparent = false;
+          mat.opacity = 1.0;
+          if (mat.emissive) {
+            mat.emissive.setHex(0x059669);
+            mat.emissiveIntensity = 0.35;
+          }
+        } else {
+          // Andere Bauteile dezent ausgrauen/abdunkeln
+          mat.transparent = true;
+          mat.opacity = 0.25;
+          if (mat.emissive) {
+            mat.emissive.setHex(0x000000);
+          }
+        }
+      });
+
+      // 3. Neue Ziel-Kameraposition setzen
+      targetCamPos.set(data.camPos.x, data.camPos.y, data.camPos.z);
+      targetLookAt.set(data.lookAt.x, data.lookAt.y, data.lookAt.z);
+
+      // 4. Text-Inspektor rechts aktualisieren
+      document.getElementById('info-tag').textContent = data.tag;
+      document.getElementById('info-title').textContent = data.title;
+      document.getElementById('info-desc').textContent = data.desc;
+
+      const specsContainer = document.getElementById('info-specs');
+      specsContainer.innerHTML = data.specs.map(row => `
+        <div class="spec-row">
+          <span class="spec-label">${row[0]}</span>
+          <span class="spec-val">${row[1]}</span>
+        </div>
+      `).join('');
+    }
+
+    // Vorheriges / Nächstes Bauteil durchschalten
+    function cyclePart(direction) {
+      const idx = PART_ORDER.indexOf(currentPartKey);
+      const nextIdx = (idx + direction + PART_ORDER.length) % PART_ORDER.length;
+      selectPart(PART_ORDER[nextIdx]);
+    }
+
+    // Container-Hülle ein-/ausblenden
+    function toggleContainerShell() {
+      shellVisible = !shellVisible;
+      containerShellGroup.visible = shellVisible;
+      document.getElementById('btn-shell').textContent =
+        shellVisible ? "📦 Container-Hülle: Sichtbar" : "📦 Container-Hülle: Ausgeblendet";
+    }
+
+    // Prozess-Animation ein-/ausschalten
+    function toggleAnimation() {
+      animationActive = !animationActive;
+      document.getElementById('btn-anim').textContent =
+        animationActive ? "⚙️ Prozess-Animation: Aktiv" : "⚙️ Prozess-Animation: Pause";
+    }
+
+    function onWindowResize() {
+      const container = document.getElementById('three-canvas-container');
+      if (!container) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    // Render-Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Sanfter Kameraflug zur gewählten Station
+      camera.position.lerp(targetCamPos, 0.06);
+      controls.target.lerp(targetLookAt, 0.08);
+      controls.update();
+
+      // Maschinen-Animationen
+      if (animationActive) {
+        shredderRollers.forEach(r => {
+          r.mesh.rotation.y += 0.04 * r.dir;
+        });
+        if (reactorDrum) {
+          reactorDrum.rotation.x += 0.012;
+        }
+        if (eddyRotor) {
+          eddyRotor.rotation.y -= 0.08;
+        }
+
+        // Materialfluss-Punkte von links (-4.6) nach rechts (+5.1) bewegen
+        wasteParticles.forEach(p => {
+          p.userData.progress += 0.0022;
+          if (p.userData.progress > 1) p.userData.progress = 0;
+          const x = -4.6 + p.userData.progress * 9.7;
+          const y = Math.sin(p.userData.progress * Math.PI * 4) * 0.12;
+          p.position.set(x, y, 0);
+        });
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', initThreeJS);
+  </script>
 
 </body>
 </html>
