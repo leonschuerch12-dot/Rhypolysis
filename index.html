@@ -3,23 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rhypolysis Systems | Dezentrale thermische Abfallverwertung</title>
-  
-  <!-- Three.js & OrbitControls -->
+  <title>RHYPOS | Dezentrale Abfallverwertungsanlage</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
   <style>
     :root {
-      --bg-primary: #09090b;
-      --bg-secondary: #121215;
-      --bg-elevated: #18181b;
-      --border-subtle: #27272a;
-      --border-focus: #52525b;
-      --text-primary: #fafafa;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
-      --accent-white: #ffffff;
+      --bg-base: #09090b;
+      --bg-panel: #121215;
+      --bg-control: #18181b;
+      --border: #27272a;
+      --border-active: #fafafa;
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
     }
 
     * {
@@ -30,992 +26,859 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      font-size: 14px;
       -webkit-font-smoothing: antialiased;
-      scroll-behavior: smooth;
     }
 
-    .container {
-      max-width: 1280px;
+    .layout {
+      max-width: 1360px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 20px;
     }
 
-    /* Sticky Header & White Logo Integration */
+    /* Header */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(9, 9, 11, 0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border);
     }
 
-    nav {
+    .header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 76px;
+      height: 60px;
     }
 
-    .nav-brand {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       text-decoration: none;
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
-    /* Weißer Kontrast-Container für das Logo in der Navigation */
-    .nav-logo-box {
-      background: #ffffff;
-      padding: 6px 14px;
-      border-radius: 8px;
+    .logo-frame {
+      background-color: #ffffff;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: center;
-      border: 1px solid #e4e4e7;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      gap: 8px;
     }
 
-    .nav-logo {
-      height: 32px;
+    .logo-img {
+      height: 26px;
+      width: auto;
+      display: block;
+      filter: grayscale(100%) contrast(220%);
+    }
+
+    .logo-svg {
+      height: 26px;
       width: auto;
       display: block;
     }
 
-    .brand-text {
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent-white);
-    }
-
-    .btn-header {
-      padding: 9px 20px;
-      background: var(--accent-white);
-      color: var(--bg-primary) !important;
-      border-radius: 6px;
-      font-weight: 600 !important;
-      font-size: 0.88rem !important;
-      transition: opacity 0.2s, transform 0.15s !important;
-    }
-
-    .btn-header:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 68px 0 48px 0;
-      text-align: center;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    /* Harmonische weiße Kontrast-Card für das Hauptlogo */
-    .hero-logo-card {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffffff;
-      padding: 20px 40px;
-      border-radius: 16px;
-      margin-bottom: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .hero-logo {
-      max-width: 300px;
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 999px;
-      color: var(--text-secondary);
-      font-size: 0.78rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 24px;
-    }
-
-    .status-indicator {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-white);
-      border-radius: 50%;
-    }
-
-    h1 {
-      font-size: 2.9rem;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      max-width: 900px;
-      margin: 0 auto 20px auto;
-      color: var(--accent-white);
-    }
-
-    .hero-lead {
-      font-size: 1.12rem;
-      color: var(--text-secondary);
-      max-width: 760px;
-      margin: 0 auto 44px auto;
-      font-weight: 400;
-    }
-
-    /* Key Performance Indicators */
-    .kpi-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      max-width: 1020px;
-      margin: 0 auto;
-    }
-
-    .kpi-box {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 20px 16px;
-      text-align: center;
-    }
-
-    .kpi-value {
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: var(--accent-white);
-      letter-spacing: -0.02em;
-    }
-
-    .kpi-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-      margin-top: 4px;
-    }
-
-    /* Section Styling */
-    section {
-      padding: 64px 0;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .section-header {
-      margin-bottom: 36px;
-    }
-
-    .section-eyebrow {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+    .brand-title {
       font-weight: 700;
-      margin-bottom: 8px;
-      display: block;
+      font-size: 15px;
+      letter-spacing: 0.04em;
     }
 
-    .section-header h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--accent-white);
-      margin-bottom: 8px;
-    }
-
-    .section-header p {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      max-width: 720px;
-    }
-
-    /* 3D Process Simulation Workspace */
-    .workspace-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 24px;
-    }
-
-    .module-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .mod-btn {
-      padding: 9px 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-primary);
-      color: var(--text-secondary);
-      font-size: 0.83rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
+    .nav-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .mod-btn:hover {
-      border-color: var(--border-focus);
-      color: var(--text-primary);
-    }
-
-    .mod-btn.active {
-      background: var(--accent-white);
-      color: var(--bg-primary);
-      border-color: var(--accent-white);
-    }
-
-    .mod-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    .mod-btn.active .mod-num {
-      background: var(--bg-primary);
-      color: var(--accent-white);
-    }
-
-    .viewer-grid {
-      display: grid;
-      grid-template-columns: 1fr 360px;
       gap: 20px;
     }
 
-    .canvas-container {
+    .nav-bar a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .nav-bar a:hover {
+      color: var(--text-main);
+    }
+
+    .btn-action {
+      background-color: var(--text-main);
+      color: var(--bg-base) !important;
+      padding: 6px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      border: 1px solid var(--text-main);
+    }
+
+    .btn-action:hover {
+      background-color: var(--bg-control);
+      color: var(--text-main) !important;
+    }
+
+    /* Summary Bar */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: 2fr repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+      background-color: var(--bg-panel);
+    }
+
+    .summary-cell {
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+    }
+
+    .summary-cell:last-child {
+      border-right: none;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .summary-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Main Workspace (3D + Controls) */
+    .workspace-section {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 16px;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+
+    .status-readout {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .state-tag {
+      background-color: var(--text-main);
+      color: var(--bg-base);
+      padding: 2px 8px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .next-action-hint {
+      color: var(--text-muted);
+    }
+
+    .view-toggles {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ui-btn {
+      background-color: var(--bg-control);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ui-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    .ui-btn.active {
+      background-color: var(--text-main);
+      color: var(--bg-base);
+      border-color: var(--text-main);
+    }
+
+    .station-bar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+
+    .station-btn {
+      background-color: var(--bg-panel);
+      color: var(--text-muted);
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .station-btn:last-child {
+      border-right: none;
+    }
+
+    .station-btn:hover {
+      background-color: var(--bg-control);
+      color: var(--text-main);
+    }
+
+    .station-btn.active {
+      background-color: var(--text-main);
+      color: var(--bg-base);
+    }
+
+    .station-idx {
+      font-family: monospace;
+      font-size: 11px;
+      padding: 1px 5px;
+      border: 1px solid currentColor;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-panel);
+    }
+
+    .viewport-box {
       position: relative;
       height: 540px;
-      background: radial-gradient(circle at 50% 40%, #1c1c21 0%, #09090b 100%);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-base);
+      border-right: 1px solid var(--border);
     }
 
     #three-canvas {
       width: 100%;
       height: 100%;
-      cursor: grab;
+      display: block;
+      cursor: crosshair;
     }
 
-    #three-canvas:active {
-      cursor: grabbing;
-    }
-
-    .canvas-toolbar {
+    .viewport-footer {
       position: absolute;
-      top: 14px;
-      left: 14px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      padding: 8px 14px;
       display: flex;
-      gap: 8px;
-      z-index: 10;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      pointer-events: none;
     }
 
-    .tool-btn {
-      padding: 7px 12px;
-      background: rgba(18, 18, 21, 0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-    }
-
-    .tool-btn:hover {
-      border-color: var(--accent-white);
-      background: var(--bg-elevated);
-    }
-
-    .canvas-legend {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
+    .legend-group {
       display: flex;
       gap: 16px;
-      background: rgba(18, 18, 21, 0.88);
-      backdrop-filter: blur(8px);
-      padding: 8px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 0.74rem;
-      pointer-events: none;
-      flex-wrap: wrap;
     }
 
-    .legend-item {
+    .legend-entry {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .legend-dot {
+    .legend-swatch {
       width: 8px;
       height: 8px;
-      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid #ffffff;
     }
 
-    /* Technical Inspector Panel */
-    .inspector-panel {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 24px;
+    /* Inspector Panel */
+    .inspector {
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      background-color: var(--bg-panel);
     }
 
-    .insp-category {
-      display: inline-block;
-      font-size: 0.74rem;
-      font-weight: 700;
+    .insp-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .insp-step {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .insp-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .insp-function {
+      font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 18px;
     }
 
-    .insp-heading {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--accent-white);
-      margin-bottom: 12px;
-      line-height: 1.25;
+    .data-list {
+      border-top: 1px solid var(--border);
+      margin-bottom: 18px;
     }
 
-    .insp-text {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-    }
-
-    .spec-table {
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 14px;
-      margin-bottom: 20px;
-    }
-
-    .spec-row {
+    .data-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.83rem;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
     }
 
-    .spec-key {
-      color: var(--text-muted);
+    .data-key {
+      color: var(--text-dim);
     }
 
-    .spec-val {
+    .data-val {
+      color: var(--text-main);
       font-weight: 600;
-      color: var(--text-primary);
       text-align: right;
     }
 
-    .insp-controls {
-      display: flex;
+    .insp-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
 
-    .insp-controls button {
-      flex: 1;
-      padding: 10px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.15s;
+    /* Technical Documentation Grid */
+    .data-section {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .insp-controls button:hover {
-      background: var(--accent-white);
-      color: var(--bg-primary);
-      border-color: var(--accent-white);
+    .sec-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
     }
 
-    /* Cards & Grids */
+    .sec-title {
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sec-note {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-panel);
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-panel);
     }
 
-    .feature-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 28px;
-      transition: border-color 0.2s;
+    .cell-box {
+      padding: 20px;
+      border-right: 1px solid var(--border);
     }
 
-    .feature-card:hover {
-      border-color: var(--border-focus);
+    .cell-box:last-child {
+      border-right: none;
     }
 
-    .card-index {
-      display: inline-block;
+    .cell-code {
       font-family: monospace;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 16px;
-    }
-
-    .feature-card h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--accent-white);
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      font-size: 0.92rem;
-      color: var(--text-secondary);
-    }
-
-    /* Strategy & Roadmap Blocks */
-    .structured-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .list-item {
-      padding: 16px 18px;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      border-left: 3px solid var(--accent-white);
-      border-radius: 8px;
-    }
-
-    .list-item strong {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
       display: block;
-      font-size: 0.94rem;
-      color: var(--accent-white);
-      margin-bottom: 4px;
     }
 
-    .list-item span {
-      font-size: 0.86rem;
-      color: var(--text-secondary);
-    }
-
-    /* Call to Action Section */
-    .cta-box {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-focus);
-      border-radius: 16px;
-      padding: 56px 32px;
-      text-align: center;
-      margin: 64px 0;
-    }
-
-    .cta-box h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent-white);
-      margin-bottom: 12px;
-    }
-
-    .cta-box p {
-      color: var(--text-secondary);
-      max-width: 620px;
-      margin: 0 auto 28px auto;
-      font-size: 1rem;
-    }
-
-    .btn-cta {
-      display: inline-block;
-      padding: 14px 32px;
-      background: var(--accent-white);
-      color: var(--bg-primary);
+    .cell-box h3 {
+      font-size: 15px;
       font-weight: 700;
-      font-size: 0.95rem;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 8px;
+      color: var(--text-main);
     }
 
-    .btn-cta:hover {
-      opacity: 0.92;
-      transform: translateY(-2px);
+    .cell-box p {
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
+    .spec-sublist {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-subitem {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .spec-subitem strong {
+      color: var(--text-main);
+    }
+
+    .spec-subitem span {
+      color: var(--text-muted);
+    }
+
+    /* Footer */
     footer {
-      padding: 36px 0;
+      padding: 24px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 12px;
+      color: var(--text-dim);
     }
 
     footer a {
-      color: var(--text-primary);
+      color: var(--text-main);
       text-decoration: none;
-      font-weight: 600;
     }
 
-    @media (max-width: 1024px) {
-      .viewer-grid, .grid-3, .grid-2 {
-        grid-template-columns: 1fr;
+    @media (max-width: 1080px) {
+      .summary-strip {
+        grid-template-columns: 1fr 1fr;
       }
-      .kpi-strip {
+      .station-bar {
         grid-template-columns: repeat(2, 1fr);
       }
-      .canvas-container {
+      .workspace-grid, .grid-3, .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .viewport-box {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
         height: 440px;
       }
-      h1 {
-        font-size: 2.1rem;
-      }
-      .nav-links {
-        display: none;
-      }
-      footer {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
+      .cell-box {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
   <header>
-    <div class="container">
-      <nav>
-        <a href="#" class="nav-brand">
-          <div class="nav-logo-box">
-            <img src="logo.png" alt="Rhypolysis Logo" class="nav-logo" onerror="this.parentElement.style.display='none'">
+    <div class="layout">
+      <div class="header-bar">
+        <a href="#" class="brand">
+          <div class="logo-frame">
+            <img src="logo.png" alt="Rhypos Logo" class="logo-img" onerror="this.style.display='none'">
+            <svg class="logo-svg" viewBox="0 0 130 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="6,14 26,4 48,14 48,32 28,40 6,30" stroke="#000000" stroke-width="3" fill="#ffffff"/>
+              <polyline points="6,14 28,24 48,14" stroke="#000000" stroke-width="3" fill="none"/>
+              <line x1="28" y1="24" x2="28" y2="40" stroke="#000000" stroke-width="3"/>
+              <path d="M22,37 L22,21 L38,14 C42,12 43,19 38,22 L22,29 M32,25 L42,38 L54,38" stroke="#000000" stroke-width="4.5" stroke-linecap="square"/>
+              <text x="62" y="29" fill="#000000" font-family="Arial, sans-serif" font-weight="900" font-size="16" letter-spacing="1">RHYPOS</text>
+            </svg>
           </div>
-          <span class="brand-text">Rhypolysis</span>
+          <span class="brand-title">RHYPOS SYSTEMS</span>
         </a>
-        <div class="nav-links">
-          <a href="#prozess">3D-Prozesssimulation</a>
-          <a href="#architektur">Systemarchitektur</a>
-          <a href="#ertragsmodell">Geschäftsmodell</a>
-          <a href="#roadmap">Sourcing & Roadmap</a>
-          <a href="mailto:rhypolysis@gmail.com" class="btn-header">Investoren-Kontakt</a>
-        </div>
-      </nav>
+        <nav class="nav-bar">
+          <a href="#simulation">Prozessmodell</a>
+          <a href="#system">Systemdaten</a>
+          <a href="#ertrag">Ertragsmodell</a>
+          <a href="#planung">Beschaffung & Phasen</a>
+          <a href="mailto:rhypolysis@gmail.com" class="btn-action">Projektanfrage senden</a>
+        </nav>
+      </div>
     </div>
   </header>
 
-  <div class="container">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-logo-card">
-        <img src="logo.png" alt="Rhypolysis Systems" class="hero-logo">
+  <div class="layout">
+    <!-- Top Technical Summary -->
+    <div class="summary-strip">
+      <div class="summary-cell">
+        <div class="summary-label">Systemfunktion</div>
+        <div class="summary-desc">Mobile 40-Fuß-Anlage zur Zerkleinerung, Metallabscheidung, Trocknung und Pyrolyse von unvorsortiertem Siedlungsabfall.</div>
       </div>
-
-      <div>
-        <div class="status-badge">
-          <span class="status-indicator"></span>
-          Phase 1: Digitales Anlagen-Engineering
-        </div>
+      <div class="summary-cell">
+        <div class="summary-label">Vorsortierung</div>
+        <div class="summary-val">0 % erforderlich</div>
       </div>
-
-      <h1>Dezentrale, vollautomatische Verwertungsanlage für unvorsortierten Siedlungsabfall</h1>
-      <p class="hero-lead">
-        Rhypolysis integriert mechanische Aufbereitung, Wertstoffseparierung, thermische Trocknung und autotherme Pyrolyse in einem mobilen 40-Fuß-ISO-Container – konzipiert für Regionen und Inselkommunen ohne eigene Verbrennungsinfrastruktur.
-      </p>
-
-      <div class="kpi-strip">
-        <div class="kpi-box">
-          <div class="kpi-value">0 %</div>
-          <div class="kpi-label">Vorsortierung erforderlich</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value">40ft HC</div>
-          <div class="kpi-label">Standard-Containerformat</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value">Fe / Al</div>
-          <div class="kpi-label">Automatische Metallabscheidung</div>
-        </div>
-        <div class="kpi-box">
-          <div class="kpi-value">Autotherm</div>
-          <div class="kpi-label">Eigenenergetischer Betrieb</div>
-        </div>
+      <div class="summary-cell">
+        <div class="summary-label">Bauform</div>
+        <div class="summary-val">40ft ISO High-Cube</div>
       </div>
-    </section>
-
-    <!-- 1. Interaktive 3D-Prozesssimulation -->
-    <section id="prozess">
-      <div class="section-header">
-        <span class="section-eyebrow">Digitale Anlagenplanung</span>
-        <h2>Interaktive 3D-Prozesssimulation</h2>
-        <p>Wählen Sie eine Prozessstufe über die Schaltflächen oder durch direktes Anklicken der Baugruppen im 3D-Modell.</p>
+      <div class="summary-cell">
+        <div class="summary-label">Metallrückgewinnung</div>
+        <div class="summary-val">Fe & Al (100 %)</div>
       </div>
-
-      <div class="workspace-card">
-        <div class="module-tabs">
-          <button class="mod-btn active" data-part="all" onclick="selectPart('all')">
-            <span>Gesamtsystem</span>
-          </button>
-          <button class="mod-btn" data-part="shredder" onclick="selectPart('shredder')">
-            <span class="mod-num">01</span> Zerkleinerungsanlage
-          </button>
-          <button class="mod-btn" data-part="separator" onclick="selectPart('separator')">
-            <span class="mod-num">02</span> Sortier- & Abscheidesystem
-          </button>
-          <button class="mod-btn" data-part="dryer" onclick="selectPart('dryer')">
-            <span class="mod-num">03</span> Thermisches Fördersystem
-          </button>
-          <button class="mod-btn" data-part="reactor" onclick="selectPart('reactor')">
-            <span class="mod-num">04</span> Pyrolyse-Reaktorsystem
-          </button>
-          <button class="mod-btn" data-part="syngas" onclick="selectPart('syngas')">
-            <span class="mod-num">05</span> Synthesegas- & Leittechnik
-          </button>
-          <button class="mod-btn" data-part="output" onclick="selectPart('output')">
-            <span class="mod-num">06</span> Feststoff-Konditionierung
-          </button>
-        </div>
-
-        <div class="viewer-grid">
-          <div class="canvas-container">
-            <div class="canvas-toolbar">
-              <button class="tool-btn" id="btn-shell" onclick="toggleShell()">Containerrahmen: Ein</button>
-              <button class="tool-btn" id="btn-anim" onclick="toggleAnim()">Prozesssimulation: Aktiv</button>
-              <button class="tool-btn" onclick="selectPart('all')">Ansicht zurücksetzen</button>
-            </div>
-
-            <div id="three-canvas"></div>
-
-            <div class="canvas-legend">
-              <div class="legend-item"><span class="legend-dot" style="background:#a1a1aa;"></span> Siedlungsabfall (Input)</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#d97706;"></span> Aufbereitetes Granulat</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> Separierte Metalle</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> Pyrolysezone (550 °C)</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#22c55e;"></span> Synthesegas & Pyrolysekoks</div>
-            </div>
-          </div>
-
-          <!-- Bauteil-Inspektor -->
-          <div class="inspector-panel">
-            <div>
-              <span class="insp-category" id="i-tag">Systemübersicht</span>
-              <h3 class="insp-heading" id="i-title">Integrierte 40-Fuß-Prozesslinie</h3>
-              <p class="insp-text" id="i-desc"></p>
-              <div class="spec-table" id="i-specs"></div>
-            </div>
-
-            <div class="insp-controls">
-              <button onclick="stepPart(-1)">← Vorherige Baugruppe</button>
-              <button onclick="stepPart(1)">Nächste Baugruppe →</button>
-            </div>
-          </div>
-        </div>
+      <div class="summary-cell">
+        <div class="summary-label">Prozessenergie</div>
+        <div class="summary-val">Autotherm (Eigengas)</div>
       </div>
-    </section>
-
-    <!-- 2. Systemarchitektur & Alleinstellungsmerkmal -->
-    <section id="architektur">
-      <div class="section-header">
-        <span class="section-eyebrow">Verfahrenstechnik</span>
-        <h2>Technologische Differenzierung</h2>
-        <p>In zahlreichen Regionen Süd- und Osteuropas – etwa auf dem griechischen Festland sowie auf Inseln wie Korfu – fehlen thermische Verwertungsanlagen. Rhypolysis ersetzt kostenintensive Abfalltransporte und Deponierung durch eine mobile Vor-Ort-Verwertung.</p>
-      </div>
-
-      <div class="grid-3">
-        <div class="feature-card">
-          <span class="card-index">USP 01</span>
-          <h3>Verarbeitung ohne Vorsortierung</h3>
-          <p>Während konventionelle Pyrolyseanlagen sortenreine und vorbehandelte Kunststofffraktionen voraussetzen, verarbeitet Rhypolysis gemischten kommunalen Siedlungsabfall direkt im kontinuierlichen Durchlauf.</p>
-        </div>
-        <div class="feature-card">
-          <span class="card-index">USP 02</span>
-          <h3>Integrierte Vorbehandlungsstrecke</h3>
-          <p>Zerkleinerungsanlage, Magnet- und Wirbelstromsortierung sowie abwärmegestützte Trocknung sind direkt vor dem Reaktor in denselben Container integriert und schützen das thermische System vor Störstoffen.</p>
-        </div>
-        <div class="feature-card">
-          <span class="card-index">USP 03</span>
-          <h3>Autotherme Prozessführung</h3>
-          <p>Das bei der sauerstofffreien Karbonisierung gewonnene Synthesegas wird gereinigt und zur Beheizung des Reaktors genutzt. Nach der Startphase arbeitet die Anlage ohne externe Brennstoffzufuhr.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. Geschäftsmodell -->
-    <section id="ertragsmodell">
-      <div class="section-header">
-        <span class="section-eyebrow">Kommerzialisierung</span>
-        <h2>Drei-Säulen-Ertragsmodell</h2>
-        <p>Das Geschäftsmodell kombiniert Anlagenvertrieb mit kontinuierlichen Rohstoff- und Energieerlösen.</p>
-      </div>
-
-      <div class="grid-3">
-        <div class="feature-card">
-          <span class="card-index">SÄULE 01</span>
-          <h3>Anlagenverkauf & Leasing</h3>
-          <p>Direktverkauf oder saisonales Bereitstellungs-Leasing schlüsselfertiger Container-Einheiten an Kommunen, Inselgemeinden, Entsorgungsbetriebe und große Tourismusresorts.</p>
-        </div>
-        <div class="feature-card">
-          <span class="card-index">SÄULE 02</span>
-          <h3>Sekundärrohstoffe (Fe / Al)</h3>
-          <p>Die Sortiersysteme separieren Eisen- und Nichteisenmetalle vor dem thermischen Prozess sortenrein aus dem Abfallstrom. Die Fraktionen werden direkt an Metallrecycler veräußert.</p>
-        </div>
-        <div class="feature-card">
-          <span class="card-index">SÄULE 03</span>
-          <h3>Energie & Pyrolysekoks</h3>
-          <p>Vermarktung der verdichteten Kohlenstoff-Briketts als industrieller Energieträger oder Grundstoff sowie Nutzung des überschüssigen Synthesegases zur lokalen Strom- und Wärmebereitstellung.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. Beschaffungsstrategie & Roadmap -->
-    <section id="roadmap">
-      <div class="section-header">
-        <span class="section-eyebrow">Umsetzung & Risiko-Management</span>
-        <h2>Beschaffungsstrategie & Projekt-Roadmap</h2>
-        <p>Fokus auf regulatorische Konformität in Europa bei gleichzeitiger Kostenkontrolle für den ersten physischen Pilotcontainer (Investitionsrahmen: 200'000 – 380'000 CHF).</p>
-      </div>
-
-      <div class="grid-2">
-        <div class="feature-card">
-          <span class="card-index">SMART HYBRID SOURCING</span>
-          <h3>Kombination aus EU-Normmodulen und Standardbau</h3>
-          <p>Zweistufige Beschaffung zur Sicherstellung aller CE- und ATEX-Anforderungen:</p>
-          <div class="structured-list">
-            <div class="list-item">
-              <strong>Sicherheitskritische Kernbaugruppen (EU / CE / ATEX)</strong>
-              <span>Zerkleinerungsanlage, Pyrolyse-Reaktor, Gasbrennersystem sowie die zentrale SPS-Sicherheitssteuerung werden von zertifizierten europäischen Industriepartnern bezogen.</span>
-            </div>
-            <div class="list-item">
-              <strong>Kostenoptimierte Peripherie & Stahlbau</strong>
-              <span>Der 40-Fuß-ISO-Containerrahmen, passive Tragstrukturen, Aufgabetrichter, Einhausungen und mechanische Förderkomponenten werden nach eigenen CAD-Vorgaben kostenoptimiert gefertigt.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card">
-          <span class="card-index">ENTWICKLUNGSPLAN</span>
-          <h3>Kapitaleffiziente Meilensteinplanung</h3>
-          <p>Minimierung technischer Risiken vor Beginn der Hardware-Fertigung:</p>
-          <div class="structured-list">
-            <div class="list-item">
-              <strong>Phase 1: Digitaler Prototyp (Aktueller Stand)</strong>
-              <span>Vollständige 3D-Konstruktion und Auslegung sämtlicher Baugruppen, Schnittstellen und Massenströme im digitalen Modell.</span>
-            </div>
-            <div class="list-item">
-              <strong>Phase 2: Seed-Finanzierung & Bau des Pilotcontainers</strong>
-              <span>Nach Abschluss des digitalen Bauplans und Sicherung der Investorenrunde folgen Komponentenbeschaffung, Integration und CE-/ATEX-Abnahme.</span>
-            </div>
-            <div class="list-item">
-              <strong>Phase 3: Pilotbetrieb & Serien-Rollout</strong>
-              <span>Validierung im realen Dauerbetrieb in einer Zielregion und anschließende Skalierung für kommunale und gewerbliche Kunden.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Investor Call to Action -->
-    <div class="cta-box">
-      <h2>Partnerschaft & Seed-Finanzierung</h2>
-      <p>Für die Überführung des digitalen Prototypen in die erste physische Pilotanlage sucht Rhypolysis Business Angels, Industriepartner und CleanTech-Investoren.</p>
-      <a href="mailto:rhypolysis@gmail.com?subject=Anfrage%20Rhypolysis%20Seed-Runde" class="btn-cta">Kontakt aufnehmen (rhypolysis@gmail.com)</a>
     </div>
 
+    <!-- 3D Workspace -->
+    <section class="workspace-section" id="simulation">
+      <div class="control-header">
+        <div class="status-readout">
+          <span class="state-tag" id="status-state">ANSICHT: GESAMTSYSTEM</span>
+          <span class="next-action-hint" id="status-instruction">Wählen Sie eine Baugruppe in der Leiste oder klicken Sie direkt auf ein Bauteil im 3D-Modell.</span>
+        </div>
+        <div class="view-toggles">
+          <button class="ui-btn active" id="btn-shell" onclick="toggleShell()">Containerrahmen: Sichtbar</button>
+          <button class="ui-btn active" id="btn-flow" onclick="toggleFlow()">Materialfluss: Aktiv</button>
+          <button class="ui-btn" onclick="selectStation('all')">Kamera zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="station-bar">
+        <button class="station-btn active" data-key="all" onclick="selectStation('all')">
+          <span class="station-idx">00</span> Gesamtsystem
+        </button>
+        <button class="station-btn" data-key="shredder" onclick="selectStation('shredder')">
+          <span class="station-idx">01</span> Zerkleinerung
+        </button>
+        <button class="station-btn" data-key="separator" onclick="selectStation('separator')">
+          <span class="station-idx">02</span> Sortiersystem
+        </button>
+        <button class="station-btn" data-key="dryer" onclick="selectStation('dryer')">
+          <span class="station-idx">03</span> Trocknung
+        </button>
+        <button class="station-btn" data-key="reactor" onclick="selectStation('reactor')">
+          <span class="station-idx">04</span> Pyrolysereaktor
+        </button>
+        <button class="station-btn" data-key="syngas" onclick="selectStation('syngas')">
+          <span class="station-idx">05</span> Gasaufbereitung
+        </button>
+        <button class="station-btn" data-key="output" onclick="selectStation('output')">
+          <span class="station-idx">06</span> Brikettierung
+        </button>
+      </div>
+
+      <div class="workspace-grid">
+        <div class="viewport-box">
+          <div id="three-canvas"></div>
+          <div class="viewport-footer">
+            <div class="legend-group">
+              <div class="legend-entry"><span class="legend-swatch" style="background:#d4d4d8;"></span> Rohabfall</div>
+              <div class="legend-entry"><span class="legend-swatch" style="background:#a16207;"></span> Granulat</div>
+              <div class="legend-entry"><span class="legend-swatch" style="background:#38bdf8;"></span> Fe/Al-Metalle</div>
+              <div class="legend-entry"><span class="legend-swatch" style="background:#dc2626;"></span> Pyrolysezone</div>
+              <div class="legend-entry"><span class="legend-swatch" style="background:#16a34a;"></span> Synthesegas</div>
+              <div class="legend-entry"><span class="legend-swatch" style="background:#18181b;"></span> Pyrolysekoks</div>
+            </div>
+            <div>Steuerung: Links drehen | Rechts verschieben | Scrollen zoomen</div>
+          </div>
+        </div>
+
+        <div class="inspector">
+          <div>
+            <div class="insp-header">
+              <span class="insp-step" id="insp-code">BAUGRUPPE 00 / 06</span>
+              <h2 class="insp-title" id="insp-title">Integrierte Prozesslinie</h2>
+            </div>
+            <p class="insp-function" id="insp-desc"></p>
+            <div class="data-list" id="insp-specs"></div>
+          </div>
+          <div class="insp-actions">
+            <button class="ui-btn" onclick="stepStation(-1)">Vorherige Baugruppe</button>
+            <button class="ui-btn" onclick="stepStation(1)">Nächste Baugruppe</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Architecture -->
+    <section class="data-section" id="system">
+      <div class="sec-bar">
+        <h2 class="sec-title">Verfahrenstechnische Spezifikationen</h2>
+        <span class="sec-note">Kontinuierlicher Durchlaufbetrieb ohne manuelle Vorbehandlung</span>
+      </div>
+      <div class="grid-3">
+        <div class="cell-box">
+          <span class="cell-code">PROZESSSTUFE A</span>
+          <h3>Mechanischer Aufschluss & Separierung</h3>
+          <p>Die vierwellige Zerkleinerungsanlage bricht gemischten Siedlungsabfall auf unter 30 mm Korngröße. Nachgeschaltete Überbandmagnet- und Wirbelstromsysteme entziehen Eisen- und Aluminiumfraktionen vor dem thermischen Eintritt.</p>
+        </div>
+        <div class="cell-box">
+          <span class="cell-code">PROZESSSTUFE B</span>
+          <h3>Abwärmetrocknung & Karbonisierung</h3>
+          <p>Ein doppelwandiger Schneckenförderer nutzt die Reaktorabwärme zur Reduktion der Eingangsfeuchte. Im Drehrohrreaktor wird das Material unter Sauerstoffausschluss bei 500 bis 650 °C in Synthesegas und Kohlenstoffkoks gespalten.</p>
+        </div>
+        <div class="cell-box">
+          <span class="cell-code">PROZESSSTUFE C</span>
+          <h3>Gaskreislauf & Feststoffverdichtung</h3>
+          <p>Das im Zyklon gereinigte Synthesegas speist die Unterfeuerung des Reaktors für den autothermen Betrieb. Der gekühlte Pyrolysekoks wird am Austrag staubfrei zu Briketts verpresst.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Revenue Model -->
+    <section class="data-section" id="ertrag">
+      <div class="sec-bar">
+        <h2 class="sec-title">Ertragsmodell (3 Einnahmequellen)</h2>
+        <span class="sec-note">Kombinierte Erlöse aus Anlagenbereitstellung, Sekundärrohstoffen und Energieträgern</span>
+      </div>
+      <div class="grid-3">
+        <div class="cell-box">
+          <span class="cell-code">EINNAHMEQUELLE 01</span>
+          <h3>Anlagenverkauf & Leasing</h3>
+          <p>Direktverkauf oder saisonales Bereitstellungs-Leasing von Container-Einheiten an Inselgemeinden, Kommunen ohne Verbrennungsanlagen und Hotelresorts.</p>
+        </div>
+        <div class="cell-box">
+          <span class="cell-code">EINNAHMEQUELLE 02</span>
+          <h3>Metall-Recycling (Fe / Al)</h3>
+          <p>Sortenreiner Verkauf der automatisch abgeschiedenen Eisen- und Aluminiumfraktionen an Metallverwerter und Schmelzwerke.</p>
+        </div>
+        <div class="cell-box">
+          <span class="cell-code">EINNAHMEQUELLE 03</span>
+          <h3>Energie & Koks-Briketts</h3>
+          <p>Vermarktung der verdichteten Kohlenstoff-Briketts als Industriebrennstoff sowie Nutzung des überschüssigen Synthesegases zur Strom- und Wärmeerzeugung.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sourcing & Project Phases -->
+    <section class="data-section" id="planung">
+      <div class="sec-bar">
+        <h2 class="sec-title">Beschaffung & Entwicklungsphasen</h2>
+        <span class="sec-note">Kalkulierter Kapitalbedarf für Pilotcontainer: 200'000 – 380'000 CHF</span>
+      </div>
+      <div class="grid-2">
+        <div class="cell-box">
+          <span class="cell-code">BESCHAFFUNGSSTRATEGIE</span>
+          <h3>Zweistufiges Komponenten-Sourcing</h3>
+          <p>Kombination aus zertifizierten europäischen Kernbaugruppen und standardisiertem Stahlbau zur Erfüllung aller EU-Sicherheitsnormen.</p>
+          <div class="spec-sublist">
+            <div class="spec-subitem">
+              <strong>Kernmodule (EU / CE / ATEX)</strong>
+              <span>Zerkleinerer, Reaktor, Gasbrenner, SPS-Sensorik</span>
+            </div>
+            <div class="spec-subitem">
+              <strong>Peripherie & Struktur</strong>
+              <span>40ft-ISO-Container, Tragrahmen, Trichter, Förderbänder</span>
+            </div>
+          </div>
+        </div>
+        <div class="cell-box">
+          <span class="cell-code">PROJEKTPLAN</span>
+          <h3>Entwicklungs- und Bauphasen</h3>
+          <p>Phasenweise Umsetzung zur technischen Risikominimierung vor dem Hardware-Einkauf.</p>
+          <div class="spec-sublist">
+            <div class="spec-subitem">
+              <strong>Phase 1 (Aktiv)</strong>
+              <span>Digitaler 3D-Prototyp & Schnittstellen-Auslegung</span>
+            </div>
+            <div class="spec-subitem">
+              <strong>Phase 2 (Nach Finanzierung)</strong>
+              <span>Beschaffung, Aufbau 1. Pilotcontainer & CE/ATEX-Abnahme</span>
+            </div>
+            <div class="spec-subitem">
+              <strong>Phase 3 (Markteintritt)</strong>
+              <span>Dauerbetrieb in Zielregion & Serien-Rollout</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer>
-      <div>© 2026 Rhypolysis Systems – Leon Schürch. Alle Rechte vorbehalten.</div>
-      <div>Kontakt: <a href="mailto:rhypolysis@gmail.com">rhypolysis@gmail.com</a></div>
+      <div>RHYPOS SYSTEMS — Léon Schürch</div>
+      <div>Kontakt für Investoren & Partner: <a href="mailto:rhypolysis@gmail.com">rhypolysis@gmail.com</a></div>
     </footer>
   </div>
 
   <!-- ================================================================= -->
-  <!-- THREE.JS 3D-ANLAGENSIMULATION                                     -->
+  <!-- HIGH-DETAIL THREE.JS INDUSTRIAL CONTAINER MODEL                   -->
   <!-- ================================================================= -->
   <script>
-    const STATION_DATA = {
+    const STATIONS = {
       all: {
-        tag: "Systemübersicht",
+        code: "BAUGRUPPE 00 / 06",
+        state: "ANSICHT: GESAMTSYSTEM",
+        hint: "Wählen Sie eine Baugruppe in der Leiste oder klicken Sie direkt auf ein Bauteil im 3D-Modell.",
         title: "Integrierte 40-Fuß-Prozesslinie",
-        desc: "Vollautomatische Gesamtanlage im standardisierten 40-Fuß-High-Cube-Container. Der unvorsortierte Siedlungsabfall durchläuft sechs aufeinander abgestimmte Prozessstufen von der Aufgabe links bis zur Feststoff- und Energieauskopplung rechts.",
+        desc: "Alle sechs Baugruppen sind in einem 12,19 m langen ISO-Container verbaut. Der Abfall wird links aufgegeben, zerkleinert, entmetallisiert, getrocknet und im Reaktor zu Synthesegas und Koks-Briketts verarbeitet.",
         specs: [
-          ["Container-Normmaß", "12,19 m × 2,44 m × 2,90 m"],
-          ["Eingangsmaterial", "Unvorsortierter Siedlungsabfall"],
-          ["Volumenreduktion", "ca. 85 – 90 %"],
-          ["Konformität", "Auslegung nach CE- & ATEX-Richtlinien"]
+          ["Container-Außenmaße", "12,19 m × 2,44 m × 2,90 m"],
+          ["Aufgabematerial", "Unvorsortierter Siedlungsabfall"],
+          ["Volumenreduktion", "85 – 90 %"],
+          ["Sicherheitsstandard", "CE- & ATEX-konforme Auslegung"]
         ],
-        cam: { x: 0.2, y: 3.5, z: 10.6 },
+        cam: { x: 0.2, y: 3.4, z: 10.4 },
         target: { x: 0.1, y: -0.1, z: 0 }
       },
       shredder: {
-        tag: "Baugruppe 01 • Mechanische Aufbereitung",
+        code: "BAUGRUPPE 01 / 06",
+        state: "BAUGRUPPE 01: ZERKLEINERUNGSANLAGE",
+        hint: "Klicken Sie auf 'Nächste Baugruppe' für das Sortiersystem.",
         title: "Mehrwellen-Zerkleinerungsanlage",
-        desc: "Über das Zuführsystem gelangt der unvorsortierte Rohabfall in das vierwellige Schneidwerk. Gegenläufige Schneidrotoren zerkleinern Störstoffe und Mischabfälle auf eine definierte, homogene Korngröße für die nachfolgende Sortierung.",
+        desc: "Vier gegenläufig rotierende Schneidwellen mit gehärteten Messerscheiben ziehen den Rohabfall über den Aufgabetrichter ein. Ein hydraulischer Nachdrücker presst sperriges Material an die Rotoren.",
         specs: [
-          ["Maschinenkategorie", "Industrielle 4-Wellen-Zerkleinerungsanlage"],
-          ["Aufgabe", "Aufschluss & Homogenisierung (< 30 mm)"],
-          ["Betriebsschutz", "Drehmomentüberwachung & Reversierautomatik"],
-          ["Beschaffung", "Zertifiziertes EU-Industriemodul (CE)"]
+          ["Maschinenkategorie", "4-Wellen-Industriezerkleinerer"],
+          ["Zielkorngröße", "< 30 mm homogenes Granulat"],
+          ["Störstoffschutz", "Lastabhängige Reversierautomatik"],
+          ["Antrieb", "2× Getriebemotoren mit Sicherheitskupplung"]
         ],
-        cam: { x: -4.4, y: 1.8, z: 3.8 },
+        cam: { x: -4.4, y: 1.7, z: 3.6 },
         target: { x: -4.5, y: 0.1, z: 0 }
       },
       separator: {
-        tag: "Baugruppe 02 • Wertstoffseparierung",
+        code: "BAUGRUPPE 02 / 06",
+        state: "BAUGRUPPE 02: SORTIERSYSTEM",
+        hint: "Klicken Sie auf 'Nächste Baugruppe' für das Trocknungssystem.",
         title: "Magnet- & Wirbelstrom-Sortiersystem",
-        desc: "Ein ansteigendes Fördersystem transportiert das zerkleinerte Material unter einem Überbandmagnetabscheider hindurch und führt es über einen Hochfrequenz-Wirbelstromrotor. Eisen- und Nichteisenmetalle werden zuverlässig in separate Container ausgeschleust.",
+        desc: "Ein Stollen-Steigförderband transportiert das Granulat unter einem Überbandmagneten hindurch, der Eisenmetalle (Fe) aushebt. Am Bandkopf stößt ein Hochfrequenz-Wirbelstromrotor Aluminium (Al) in den zweiten Sammelbehälter ab.",
         specs: [
-          ["Maschinenkategorie", "Magnet- & Wirbelstrom-Sortiersystem"],
-          ["Separierte Fraktionen", "Eisenmetalle (Fe) & Aluminium (Al)"],
-          ["Technischer Nutzen", "Schutz der Förderschnecken & des Reaktors"],
-          ["Ökonomischer Nutzen", "Sortenreiner Rohstoffverkauf"]
+          ["Stufe 1", "Permanent-Überbandmagnet (Eisen)"],
+          ["Stufe 2", "Exzentrischer Polrad-Scheider (Aluminium)"],
+          ["Sortierreinheit", "> 98 % Metallabscheidung"],
+          ["Funktion", "Reaktorschutz & Rohstoffgewinnung"]
         ],
-        cam: { x: -2.3, y: 1.5, z: 3.7 },
+        cam: { x: -2.3, y: 1.4, z: 3.5 },
         target: { x: -2.3, y: -0.2, z: 0.1 }
       },
       dryer: {
-        tag: "Baugruppe 03 • Thermische Konditionierung",
-        title: "Thermisches Fördersystem (Vortrocknung)",
-        desc: "Ein geschlossener, doppelwandiger Schneckenförderer nutzt die rückgeführte Prozessabwärme des Reaktors, um die Restfeuchte des Abfallgranulats vor dem Eintritt in die Reaktionszone signifikant zu senken.",
+        code: "BAUGRUPPE 03 / 06",
+        state: "BAUGRUPPE 03: TROCKNUNGSSYSTEM",
+        hint: "Klicken Sie auf 'Nächste Baugruppe' für den Pyrolysereaktor.",
+        title: "Thermisches Fördersystem (Vortrockner)",
+        desc: "Das entmetallisierte Granulat durchläuft einen isolierten Doppelmantel-Schneckenförderer. Heiße Abgase aus der Reaktor-Brennkammer strömen durch den Außenmantel und verdampfen die Restfeuchte.",
         specs: [
-          ["Maschinenkategorie", "Abwärmebeheiztes Schneckenfördersystem"],
-          ["Wärmequelle", "100 % interne Reaktor-Abwärme"],
-          ["Prozessfunktion", "Feuchtereduktion & Heizwertsteigerung"],
-          ["Zusatzenergiebedarf", "Kein externer Brennstoff erforderlich"]
+          ["Bauart", "Doppelmantel-Heizschnecke"],
+          ["Wärmequelle", "100 % Reaktor-Abwärmenutzung"],
+          ["Brüdenabzug", "Kondensatabscheidung am Domstutzen"],
+          ["Fremdenergiebedarf", "0 kW im Dauerbetrieb"]
         ],
-        cam: { x: -0.3, y: 1.4, z: 3.6 },
+        cam: { x: -0.3, y: 1.3, z: 3.4 },
         target: { x: -0.3, y: -0.2, z: 0 }
       },
       reactor: {
-        tag: "Baugruppe 04 • Thermochemische Konversion",
+        code: "BAUGRUPPE 04 / 06",
+        state: "BAUGRUPPE 04: PYROLYSEREAKTOR",
+        hint: "Klicken Sie auf 'Nächste Baugruppe' für die Gasaufbereitung.",
         title: "Autothermer Pyrolyse-Drehrohrreaktor",
-        desc: "Im indirekt beheizten Drehrohrreaktor wird die vorgetrocknete Abfallfraktion unter vollständigem Sauerstoffausschluss bei 500 bis 650 °C thermochemisch gespalten. Es entstehen energiereiches Synthesegas sowie fester Pyrolysekoks.",
+        desc: "Das vorgetrocknete Material wird über eine gasdichte Zellradschleuse in die rotierende Reaktortrommel geführt. Unter Sauerstoffausschluss spaltet die indirekte Gasbrenner-Unterfeuerung den Abfall bei 550 °C in Synthesegas und Kohlenstoff.",
         specs: [
-          ["Maschinenkategorie", "Drehrohr-Pyrolysereaktor"],
-          ["Temperaturniveau", "500 °C – 650 °C (sauerstofffrei)"],
-          ["Beheizung", "Autotherm über rückgeführtes Synthesegas"],
-          ["Sicherheitsnorm", "ATEX- & Druckgeräte-Zertifizierung (EU)"]
+          ["Prozesstemperatur", "500 °C – 650 °C (sauerstofffrei)"],
+          ["Lagerung", "2× Schwerlast-Laufrollenstationen"],
+          ["Beheizung", "Indirekte Synthesegas-Brennerleiste"],
+          ["Zertifizierung", "ATEX- & Druckgeräte-Auslegung"]
         ],
-        cam: { x: 2.0, y: 1.5, z: 4.0 },
+        cam: { x: 2.0, y: 1.4, z: 3.8 },
         target: { x: 2.0, y: -0.1, z: 0 }
       },
       syngas: {
-        tag: "Baugruppe 05 • Gasmanagement & Automation",
-        title: "Synthesegas-Aufbereitung & SPS-Leittechnik",
-        desc: "Das erzeugte Rohgas wird in einer Zyklon- und Waschstufe gereinigt. Ein Teilstrom versorgt kontinuierlich die Unterfeuerung des Reaktors, während die zentrale SPS-Steuerung sämtliche Temperatur-, Druck- und Gassensoren überwacht.",
+        code: "BAUGRUPPE 05 / 06",
+        state: "BAUGRUPPE 05: GASAUFBEREITUNG & SPS",
+        hint: "Klicken Sie auf 'Nächste Baugruppe' für die Brikettierung.",
+        title: "Zyklon-Gaswäscher & SPS-Steuerschrank",
+        desc: "Heißes Synthesegas strömt über den oberen Sammeldome in den Zyklonabscheider und Gaskühler. Gereinigtes Brenngas wird über die Rückführleitung direkt zu den Brennerdüsen unter dem Reaktor geleitet.",
         specs: [
-          ["Maschinenkategorie", "Gasreinigungssystem & Prozessleittechnik"],
-          ["Eigenversorgung", "Speist den Reaktorbrenner im Kreislauf"],
-          ["Überschussenergie", "Auskopplung für Strom- oder Wärmenutzung"],
-          ["Überwachung", "Vollautomatische SPS mit Sicherheitsabschaltung"]
+          ["Aufbereitung", "Heißgaszyklon & Kondensatstufe"],
+          ["Gaskreislauf", "Direkte Rückführung zur Unterfeuerung"],
+          ["Prozesssteuerung", "SPS-Schaltschrank mit HMI-Panel"],
+          ["Überwachung", "Redundante Druck- & Gassensorik"]
         ],
-        cam: { x: 3.5, y: 1.6, z: 3.8 },
+        cam: { x: 3.5, y: 1.5, z: 3.6 },
         target: { x: 3.5, y: 0.0, z: 0 }
       },
       output: {
-        tag: "Baugruppe 06 • Reststoffveredelung",
-        title: "Kühlaustrag & Feststoff-Konditionierung",
-        desc: "Der verbleibende kohlenstoffhaltige Feststoff wird über ein gekühltes Schneckensystem sicher aus dem Reaktor ausgeschleust und anschließend in einer Presse zu kompakten, transportfähigen Koks-Briketts verdichtet.",
+        code: "BAUGRUPPE 06 / 06",
+        state: "BAUGRUPPE 06: FESTSTOFF-KONDITIONIERUNG",
+        hint: "Klicken Sie auf 'Gesamtsystem' für die Komplettübersicht.",
+        title: "Wasserkühlschnecke & Brikettierpresse",
+        desc: "Der feste Pyrolysekoks wird über eine wassergekühlte Austragsschnecke auf unter 50 °C heruntergekühlt und in der nachgeschalteten Stempelpresse zu formstabilen Koks-Briketts verdichtet.",
         specs: [
-          ["Maschinenkategorie", "Kühlschnecken- & Brikettiersystem"],
-          ["Austragstemperatur", "< 50 °C durch geschlossene Mantelkühlung"],
-          ["Endprodukt", "Verdichtete Pyrolysekoks-Briketts"],
-          ["Verwertung", "Industriebrennstoff oder Bodenverbesserer"]
+          ["Kühlsystem", "Geschlossene Wassermantelschnecke"],
+          ["Austragstemperatur", "< 50 °C"],
+          ["Endprodukt", "Verdichtete Kohlenstoff-Briketts"],
+          ["Verwertung", "Industriebrennstoff / Bodenkohle"]
         ],
-        cam: { x: 4.9, y: 1.5, z: 3.7 },
-        target: { x: 4.8, y: -0.4, z: 0 }
+        cam: { x: 4.9, y: 1.4, z: 3.5 },
+        target: { x: 4.8, y: -0.3, z: 0 }
       }
     };
 
-    const ORDER = ['all', 'shredder', 'separator', 'dryer', 'reactor', 'syngas', 'output'];
-    let activeKey = 'all';
+    const KEYS = ['all', 'shredder', 'separator', 'dryer', 'reactor', 'syngas', 'output'];
+    let currentKey = 'all';
+    let shellVisible = true;
+    let flowActive = true;
 
     let scene, camera, renderer, controls, raycaster, mouse;
-    let shellGroup;
-    let shellShown = true;
-    let animRunning = true;
+    let containerShellGroup;
+    const partMeshes = [];
+    const shredderRotors = [];
+    let reactorScrew, eddyRotor, burnerLight;
+    const burnerFlames = [];
+    const wasteParticles = [];
+    const metalParticles = [];
+    const gasParticles = [];
 
-    const clickableMeshes = [];
-    const shredderShafts = [];
-    let reactorInnerScrew, eddyWheel, fireLight, flameMeshes = [];
+    const camTargetPos = new THREE.Vector3(0.2, 3.4, 10.4);
+    const camLookAtPos = new THREE.Vector3(0.1, -0.1, 0);
 
-    const wasteItems = [];
-    const metalSparks = [];
-    const syngasBubbles = [];
-
-    const camGoal = new THREE.Vector3(0.2, 3.5, 10.6);
-    const lookGoal = new THREE.Vector3(0.1, -0.1, 0);
-
-    function initScene() {
-      const box = document.getElementById('three-canvas');
-      const w = box.clientWidth;
-      const h = box.clientHeight;
+    function initViewer() {
+      const container = document.getElementById('three-canvas');
+      const w = container.clientWidth;
+      const h = container.clientHeight;
 
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0x09090b);
-      scene.fog = new THREE.Fog(0x09090b, 16, 32);
 
-      camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
-      camera.position.copy(camGoal);
+      camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
+      camera.position.copy(camTargetPos);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(w, h);
@@ -1023,420 +886,538 @@
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.12;
-      box.appendChild(renderer.domElement);
+      renderer.toneMappingExposure = 1.15;
+      container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
-      controls.dampingFactor = 0.06;
-      controls.maxPolarAngle = Math.PI / 2 + 0.04;
-      controls.minDistance = 2.2;
-      controls.maxDistance = 20;
+      controls.dampingFactor = 0.08;
+      controls.maxPolarAngle = Math.PI / 2 + 0.02;
+      controls.minDistance = 2.0;
+      controls.maxDistance = 18;
 
-      const hemi = new THREE.HemisphereLight(0xfafafa, 0x18181b, 0.7);
-      scene.add(hemi);
+      // Industrial Lighting
+      scene.add(new THREE.HemisphereLight(0xfafafa, 0x18181b, 0.75));
 
-      const mainLight = new THREE.DirectionalLight(0xffffff, 1.15);
-      mainLight.position.set(6, 14, 10);
-      mainLight.castShadow = true;
-      mainLight.shadow.mapSize.width = 2048;
-      mainLight.shadow.mapSize.height = 2048;
-      scene.add(mainLight);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      keyLight.position.set(7, 15, 11);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      scene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0xa1a1aa, 0.45);
-      rimLight.position.set(-10, 6, -8);
-      scene.add(rimLight);
+      const backLight = new THREE.DirectionalLight(0xd4d4d8, 0.5);
+      backLight.position.set(-9, 7, -8);
+      scene.add(backLight);
 
-      fireLight = new THREE.PointLight(0xff5500, 2.4, 4.5);
-      fireLight.position.set(2.0, -0.25, 0.2);
-      scene.add(fireLight);
+      burnerLight = new THREE.PointLight(0xff4500, 2.5, 4.2);
+      burnerLight.position.set(2.05, -0.35, 0.2);
+      scene.add(burnerLight);
 
-      const grid = new THREE.GridHelper(26, 26, 0x27272a, 0x18181b);
+      // Technical Floor Grid
+      const grid = new THREE.GridHelper(24, 24, 0x27272a, 0x18181b);
       grid.position.y = -1.55;
       scene.add(grid);
 
-      createISOContainer();
-      createShredderUnit();
-      createSeparatorUnit();
-      createDryerUnit();
-      createPyrolysisReactor();
-      createSyngasAndPLC();
-      createBriquetteOutput();
-      createRealisticWasteStream();
+      // Build Detailed 3D Assembly
+      buildISOContainer();
+      buildShredderAssembly();
+      buildSortingAssembly();
+      buildDryerAssembly();
+      buildReactorAssembly();
+      buildSyngasAssembly();
+      buildOutputAssembly();
+      buildProcessStreams();
 
       raycaster = new THREE.Raycaster();
       mouse = new THREE.Vector2();
 
-      let downPt = { x: 0, y: 0 };
+      let downCoord = { x: 0, y: 0 };
       renderer.domElement.addEventListener('pointerdown', e => {
-        downPt = { x: e.clientX, y: e.clientY };
+        downCoord = { x: e.clientX, y: e.clientY };
       });
       renderer.domElement.addEventListener('pointerup', e => {
-        if (Math.hypot(e.clientX - downPt.x, e.clientY - downPt.y) < 6) {
-          handleCanvasPick(e);
+        if (Math.hypot(e.clientX - downCoord.x, e.clientY - downCoord.y) < 5) {
+          pickMesh(e);
         }
       });
 
       window.addEventListener('resize', onResize);
-      selectPart('all');
-      animateLoop();
+      selectStation('all');
+      renderLoop();
     }
 
-    function regMesh(mesh, partKey) {
+    function addPart(mesh, key) {
       mesh.castShadow = true;
       mesh.receiveShadow = true;
-      mesh.userData.partKey = partKey;
-      mesh.userData.origColor = mesh.material.color.getHex();
-      mesh.userData.origOpacity = mesh.material.opacity !== undefined ? mesh.material.opacity : 1;
-      mesh.userData.origTransparent = mesh.material.transparent || false;
-      clickableMeshes.push(mesh);
+      mesh.userData.station = key;
+      mesh.userData.baseHex = mesh.material.color.getHex();
+      mesh.userData.baseOpacity = mesh.material.opacity !== undefined ? mesh.material.opacity : 1;
+      mesh.userData.baseTrans = mesh.material.transparent || false;
+      partMeshes.push(mesh);
       return mesh;
     }
 
-    function createISOContainer() {
-      shellGroup = new THREE.Group();
+    // Detailed 40ft ISO High-Cube Container
+    function buildISOContainer() {
+      containerShellGroup = new THREE.Group();
 
-      const floorMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.7, metalness: 0.5 });
-      const floor = new THREE.Mesh(new THREE.BoxGeometry(12.2, 0.14, 2.44), floorMat);
-      floor.position.set(0, -1.42, 0);
+      const darkSteel = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.65, metalness: 0.6 });
+      const frameSteel = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.4, metalness: 0.75 });
+      const castingSteel = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.3, metalness: 0.8 });
+
+      // Floor & Cross I-Beams
+      const floor = new THREE.Mesh(new THREE.BoxGeometry(12.2, 0.1, 2.44), darkSteel);
+      floor.position.set(0, -1.4, 0);
       floor.receiveShadow = true;
       scene.add(floor);
 
-      const frameMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.4, metalness: 0.7 });
-      const cornerMat = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.3, metalness: 0.6 });
+      for (let x = -5.8; x <= 5.8; x += 0.6) {
+        const joist = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.1, 2.44), frameSteel);
+        joist.position.set(x, -1.48, 0);
+        scene.add(joist);
+      }
 
+      // Forklift Pockets
+      [-1.6, 1.6].forEach(fx => {
+        const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.12, 2.46), castingSteel);
+        pocket.position.set(fx, -1.48, 0);
+        scene.add(pocket);
+      });
+
+      // 8 ISO Corner Castings with Twistlock Holes
       const xs = [-6.05, 6.05];
       const ys = [-1.38, 1.45];
       const zs = [-1.17, 1.17];
 
       xs.forEach(x => ys.forEach(y => zs.forEach(z => {
-        const cc = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), cornerMat);
-        cc.position.set(x, y, z);
-        shellGroup.add(cc);
+        const casting = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), castingSteel);
+        casting.position.set(x, y, z);
+        containerShellGroup.add(casting);
       })));
 
+      // Main Structural Frame Rails
       xs.forEach(x => zs.forEach(z => {
-        const post = new THREE.Mesh(new THREE.BoxGeometry(0.11, 2.8, 0.11), frameMat);
-        post.position.set(x, 0.03, z);
-        shellGroup.add(post);
+        const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.82, 0.12), frameSteel);
+        pillar.position.set(x, 0.03, z);
+        containerShellGroup.add(pillar);
       }));
 
       ys.forEach(y => zs.forEach(z => {
-        const beam = new THREE.Mesh(new THREE.BoxGeometry(12.1, 0.1, 0.1), frameMat);
-        beam.position.set(0, y, z);
-        shellGroup.add(beam);
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(12.1, 0.11, 0.11), frameSteel);
+        rail.position.set(0, y, z);
+        containerShellGroup.add(rail);
       }));
 
-      const corruMat = new THREE.MeshStandardMaterial({
+      ys.forEach(y => xs.forEach(x => {
+        const cross = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.11, 2.34), frameSteel);
+        cross.position.set(x, y, 0);
+        containerShellGroup.add(cross);
+      }));
+
+      // Corrugated Rear Wall & Roof Ribs
+      const wallMat = new THREE.MeshStandardMaterial({
         color: 0x52525b,
         roughness: 0.5,
-        metalness: 0.5,
+        metalness: 0.6,
         transparent: true,
         opacity: 0.22
       });
-      for (let i = -5.8; i <= 5.8; i += 0.35) {
-        const rib = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.72, 0.05), corruMat);
-        rib.position.set(i, 0.03, -1.17);
-        shellGroup.add(rib);
+
+      for (let x = -5.75; x <= 5.75; x += 0.28) {
+        const rib = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.72, 0.06), wallMat);
+        rib.position.set(x, 0.03, -1.17);
+        containerShellGroup.add(rib);
       }
 
-      scene.add(shellGroup);
-    }
-
-    // 01: Mehrwellen-Zerkleinerungsanlage
-    function createShredderUnit() {
-      const key = 'shredder';
-
-      const legMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.5, metalness: 0.7 });
-      const stand = regMesh(new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.9, 1.6), legMat), key);
-      stand.position.set(-4.6, -0.9, 0);
-      scene.add(stand);
-
-      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.35, metalness: 0.6 });
-      const body = regMesh(new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.72, 1.52), bodyMat), key);
-      body.position.set(-4.6, -0.08, 0);
-      scene.add(body);
-
-      const hopperMat = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, roughness: 0.3, metalness: 0.8 });
-      const hopper = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(1.18, 0.78, 0.78, 4), hopperMat), key);
-      hopper.rotation.y = Math.PI / 4;
-      hopper.position.set(-4.6, 0.68, 0);
-      scene.add(hopper);
-
-      const bladeMat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, roughness: 0.2, metalness: 0.9 });
-      const shaftCoords = [-4.92, -4.7, -4.48, -4.26];
-      shaftCoords.forEach((sx, idx) => {
-        const shaftGroup = new THREE.Group();
-        shaftGroup.position.set(sx, 0.28, 0);
-
-        const core = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.25, 12), bladeMat), key);
-        core.rotation.x = Math.PI / 2;
-        shaftGroup.add(core);
-
-        for (let z = -0.5; z <= 0.5; z += 0.14) {
-          const tooth = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.06, 6), bladeMat), key);
-          tooth.rotation.x = Math.PI / 2;
-          tooth.rotation.z = z * 3;
-          tooth.position.z = z;
-          shaftGroup.add(tooth);
-        }
-
-        scene.add(shaftGroup);
-        shredderShafts.push({ group: shaftGroup, dir: idx % 2 === 0 ? 1 : -1 });
+      // Right End Cargo Doors with 4 Vertical Locking Bars
+      [-0.56, 0.56].forEach(dz => {
+        const doorPanel = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.7, 1.06), wallMat);
+        doorPanel.position.set(6.05, 0.03, dz);
+        containerShellGroup.add(doorPanel);
       });
 
-      const motorMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4, metalness: 0.8 });
-      [-0.38, 0.38].forEach(mz => {
-        const motor = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.65, 16), motorMat), key);
+      [-0.85, -0.3, 0.3, 0.85].forEach(lz => {
+        const lockRod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.68, 8), castingSteel);
+        lockRod.position.set(6.1, 0.03, lz);
+        containerShellGroup.add(lockRod);
+      });
+
+      scene.add(containerShellGroup);
+    }
+
+    // 01: Multi-Shaft Shredder Assembly
+    function buildShredderAssembly() {
+      const k = 'shredder';
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.5, metalness: 0.7 });
+      const midMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.35, metalness: 0.75 });
+      const lightSteel = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, roughness: 0.25, metalness: 0.85 });
+
+      // Heavy I-Beam Support Legs & Baseframe
+      [-5.3, -3.9].forEach(lx => {
+        [-0.65, 0.65].forEach(lz => {
+          const leg = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.95, 0.18), darkMat), k);
+          leg.position.set(lx, -0.88, lz);
+          scene.add(leg);
+        });
+      });
+
+      const subFrame = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 1.56), darkMat), k);
+      subFrame.position.set(-4.6, -0.4, 0);
+      scene.add(subFrame);
+
+      // Shredder Cutting Chamber with Bolted Side Plates
+      const chamber = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.74, 1.5), midMat), k);
+      chamber.position.set(-4.6, 0.04, 0);
+      scene.add(chamber);
+
+      // External Hydraulic Ram Pusher Cylinder
+      const cylBarrel = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.75, 14), lightSteel), k);
+      cylBarrel.rotation.z = Math.PI / 4;
+      cylBarrel.position.set(-5.35, 0.65, 0);
+      scene.add(cylBarrel);
+
+      // Reinforced Feed Hopper with Upper Flange Lip
+      const hopper = addPart(new THREE.Mesh(new THREE.CylinderGeometry(1.2, 0.8, 0.78, 4), lightSteel), k);
+      hopper.rotation.y = Math.PI / 4;
+      hopper.position.set(-4.6, 0.78, 0);
+      scene.add(hopper);
+
+      const rim = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.76, 0.08, 1.76), darkMat), k);
+      rim.position.set(-4.6, 1.18, 0);
+      scene.add(rim);
+
+      // 4 Intermeshing Toothed Cutter Shafts
+      [-4.93, -4.71, -4.49, -4.27].forEach((sx, idx) => {
+        const rotorGroup = new THREE.Group();
+        rotorGroup.position.set(sx, 0.36, 0);
+
+        const axle = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.32, 12), lightSteel), k);
+        axle.rotation.x = Math.PI / 2;
+        rotorGroup.add(axle);
+
+        for (let z = -0.54; z <= 0.54; z += 0.11) {
+          const cutter = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.05, 6), lightSteel), k);
+          cutter.rotation.x = Math.PI / 2;
+          cutter.rotation.z = z * 4;
+          cutter.position.z = z;
+          rotorGroup.add(cutter);
+        }
+        scene.add(rotorGroup);
+        shredderRotors.push({ group: rotorGroup, dir: idx % 2 === 0 ? 1 : -1 });
+      });
+
+      // Dual Planetary Gearboxes & Finned Electric Motors
+      [-0.42, 0.42].forEach(mz => {
+        const gearbox = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.38, 0.38), darkMat), k);
+        gearbox.position.set(-5.55, 0.04, mz);
+        scene.add(gearbox);
+
+        const motor = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.55, 16), midMat), k);
         motor.rotation.z = Math.PI / 2;
-        motor.position.set(-5.6, -0.05, mz);
+        motor.position.set(-5.95, 0.04, mz);
         scene.add(motor);
       });
     }
 
-    // 02: Sortier- & Abscheidesystem
-    function createSeparatorUnit() {
-      const key = 'separator';
+    // 02: Magnetic & Eddy-Current Sorting Assembly
+    function buildSortingAssembly() {
+      const k = 'separator';
+      const frameMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.45, metalness: 0.7 });
+      const beltMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.9 });
+      const metalMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, roughness: 0.3, metalness: 0.8 });
 
-      const frameMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.5, metalness: 0.6 });
-      const beltFrame = regMesh(new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.16, 0.88), frameMat), key);
-      beltFrame.position.set(-2.55, -0.42, 0);
-      beltFrame.rotation.z = 0.22;
-      scene.add(beltFrame);
+      // Inclined Conveyor Side Rails & Cleated Belt
+      const conveyorGroup = new THREE.Group();
+      conveyorGroup.position.set(-2.55, -0.4, 0);
+      conveyorGroup.rotation.z = 0.22;
 
-      const rubberMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.9 });
-      const rubber = regMesh(new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.78), rubberMat), key);
-      rubber.position.set(-2.55, -0.34, 0);
-      rubber.rotation.z = 0.22;
-      scene.add(rubber);
+      const chassis = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.14, 0.92), frameMat), k);
+      conveyorGroup.add(chassis);
 
-      const magMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.35, metalness: 0.5 });
-      const magnet = regMesh(new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.38, 1.05), magMat), key);
-      magnet.position.set(-2.55, 0.25, 0);
-      magnet.rotation.z = 0.22;
-      scene.add(magnet);
+      const belt = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.44, 0.05, 0.8), beltMat), k);
+      belt.position.y = 0.08;
+      conveyorGroup.add(belt);
 
-      const eddyMat = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, roughness: 0.3, metalness: 0.8 });
-      eddyWheel = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.92, 20), eddyMat), key);
-      eddyWheel.rotation.x = Math.PI / 2;
-      eddyWheel.position.set(-1.38, -0.14, 0);
-      scene.add(eddyWheel);
+      // Transverse Belt Cleats & Idler Rollers
+      for (let x = -1.1; x <= 1.1; x += 0.28) {
+        const cleat = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.76), frameMat), k);
+        cleat.position.set(x, 0.12, 0);
+        conveyorGroup.add(cleat);
+      }
+      scene.add(conveyorGroup);
 
-      const feBinMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.5, metalness: 0.5 });
-      const feBin = regMesh(new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.62, 0.75), feBinMat), key);
-      feBin.position.set(-2.65, -1.03, 0.58);
-      scene.add(feBin);
+      // Suspended Overband Magnet Unit with Support Gantry
+      const magBlock = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.38, 1.08), metalMat), k);
+      magBlock.position.set(-2.55, 0.26, 0);
+      magBlock.rotation.z = 0.22;
+      scene.add(magBlock);
 
-      const alBinMat = new THREE.MeshStandardMaterial({ color: 0x71717a, roughness: 0.4, metalness: 0.6 });
-      const alBin = regMesh(new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.62, 0.75), alBinMat), key);
-      alBin.position.set(-1.8, -1.03, 0.58);
-      scene.add(alBin);
-    }
-
-    // 03: Thermisches Fördersystem
-    function createDryerUnit() {
-      const key = 'dryer';
-
-      const steelMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, roughness: 0.25, metalness: 0.85 });
-      const tube = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 1.95, 24), steelMat), key);
-      tube.rotation.z = Math.PI / 2;
-      tube.position.set(-0.3, -0.2, 0);
-      scene.add(tube);
-
-      const flangeMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.4, metalness: 0.7 });
-      [-1.1, -0.3, 0.5].forEach(fx => {
-        const ring = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.1, 24), flangeMat), key);
-        ring.rotation.z = Math.PI / 2;
-        ring.position.set(fx, -0.2, 0);
-        scene.add(ring);
+      [-2.9, -2.2].forEach(gx => {
+        const hanger = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.9, 8), frameMat), k);
+        hanger.position.set(gx, 0.65, -0.5);
+        scene.add(hanger);
       });
 
-      const copperMat = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.3, metalness: 0.75 });
-      const hotPipe = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 2.2, 16), copperMat), key);
-      hotPipe.rotation.z = Math.PI / 2;
-      hotPipe.position.set(0.8, 0.48, -0.45);
-      scene.add(hotPipe);
+      // High-Frequency Eddy-Current Head Drum
+      eddyRotor = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.94, 20), metalMat), k);
+      eddyRotor.rotation.x = Math.PI / 2;
+      eddyRotor.position.set(-1.35, -0.12, 0);
+      scene.add(eddyRotor);
+
+      // Partitioned Metal Recovery Bins (Fe & Al) with Ribbed Walls
+      [-2.68, -1.82].forEach((bx, idx) => {
+        const binMat = new THREE.MeshStandardMaterial({
+          color: idx === 0 ? 0x52525b : 0x71717a,
+          roughness: 0.45,
+          metalness: 0.65
+        });
+        const bin = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.64, 0.78), binMat), k);
+        bin.position.set(bx, -1.02, 0.58);
+        scene.add(bin);
+      });
     }
 
-    // 04: Pyrolyse-Reaktorsystem
-    function createPyrolysisReactor() {
-      const key = 'reactor';
+    // 03: Thermal Drying Screw System
+    function buildDryerAssembly() {
+      const k = 'dryer';
+      const jacketMat = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.25, metalness: 0.85 });
+      const flangeMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.4, metalness: 0.75 });
+      const ductMat = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, roughness: 0.35, metalness: 0.8 });
 
-      const furnaceMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.5, metalness: 0.7 });
-      const furnace = regMesh(new THREE.Mesh(new THREE.BoxGeometry(2.55, 0.78, 1.52), furnaceMat), key);
-      furnace.position.set(2.05, -0.78, 0);
-      scene.add(furnace);
+      // Double-Walled Thermal Screw Trough
+      const barrel = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 2.0, 24), jacketMat), k);
+      barrel.rotation.z = Math.PI / 2;
+      barrel.position.set(-0.3, -0.2, 0);
+      scene.add(barrel);
 
-      const fireGlassMat = new THREE.MeshStandardMaterial({
-        color: 0xff4500,
-        emissive: 0xff3300,
-        emissiveIntensity: 1.2
+      // Bolted Flanges & Saddle Supports
+      [-1.15, -0.55, 0.05, 0.62].forEach(fx => {
+        const flange = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.07, 24), flangeMat), k);
+        flange.rotation.z = Math.PI / 2;
+        flange.position.set(fx, -0.2, 0);
+        scene.add(flange);
       });
-      const burnerWindow = regMesh(new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.18, 1.56), fireGlassMat), key);
-      burnerWindow.position.set(2.05, -0.68, 0);
-      scene.add(burnerWindow);
 
-      const shellSteel = new THREE.MeshStandardMaterial({
-        color: 0xa1a1aa,
-        roughness: 0.25,
-        metalness: 0.85,
+      [-0.95, 0.35].forEach(sx => {
+        const saddle = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.72, 0.7), flangeMat), k);
+        saddle.position.set(sx, -0.92, 0);
+        scene.add(saddle);
+      });
+
+      // Insulated Hot-Gas Return Duct from Reactor
+      const hotDuct = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 2.25, 16), ductMat), k);
+      hotDuct.rotation.z = Math.PI / 2;
+      hotDuct.position.set(0.8, 0.52, -0.46);
+      scene.add(hotDuct);
+
+      // Vertical Vapor Exhaust Stack
+      const stack = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.55, 12), flangeMat), k);
+      stack.position.set(-0.8, 0.32, -0.2);
+      scene.add(stack);
+    }
+
+    // 04: Autothermal Rotary Pyrolysis Reactor
+    function buildReactorAssembly() {
+      const k = 'reactor';
+      const furnaceMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.45, metalness: 0.75 });
+      const drumSteel = new THREE.MeshStandardMaterial({
+        color: 0xd4d4d8,
+        roughness: 0.22,
+        metalness: 0.88,
         side: THREE.DoubleSide
       });
-      const outerDrum = regMesh(
-        new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 2.4, 28, 1, false, 0, Math.PI * 1.55), shellSteel),
-        key
-      );
-      outerDrum.rotation.z = Math.PI / 2;
-      outerDrum.rotation.x = -0.6;
-      outerDrum.position.set(2.05, 0.05, 0);
-      scene.add(outerDrum);
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.35, metalness: 0.85 });
 
-      const innerGroup = new THREE.Group();
-      innerGroup.position.set(2.05, 0.05, 0);
+      // Lower Insulated Furnace Housing
+      const furnaceBox = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.82, 1.54), furnaceMat), k);
+      furnaceBox.position.set(2.05, -0.78, 0);
+      scene.add(furnaceBox);
+
+      // Syngas Burner Manifold Rail & Inspection Window
+      const glowMat = new THREE.MeshStandardMaterial({
+        color: 0xff4500,
+        emissive: 0xff2200,
+        emissiveIntensity: 1.3
+      });
+      const fireSlot = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.16, 1.56), glowMat), k);
+      fireSlot.position.set(2.05, -0.68, 0);
+      scene.add(fireSlot);
+
+      // Cutaway Stainless Steel Rotary Drum
+      const outerCylinder = addPart(
+        new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 2.45, 32, 1, false, 0, Math.PI * 1.55), drumSteel),
+        k
+      );
+      outerCylinder.rotation.z = Math.PI / 2;
+      outerCylinder.rotation.x = -0.6;
+      outerCylinder.position.set(2.05, 0.06, 0);
+      scene.add(outerCylinder);
+
+      // Internal Helical Auger Flights & Glowing Core
+      const screwGroup = new THREE.Group();
+      screwGroup.position.set(2.05, 0.06, 0);
 
       const coreMat = new THREE.MeshStandardMaterial({
         color: 0xdc2626,
-        emissive: 0xb91c1c,
-        emissiveIntensity: 0.8,
+        emissive: 0x991b1b,
+        emissiveIntensity: 0.85,
         roughness: 0.4
       });
-      const hotCore = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 2.3, 16), coreMat), key);
-      hotCore.rotation.z = Math.PI / 2;
-      innerGroup.add(hotCore);
+      const centerTube = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 2.34, 16), coreMat), k);
+      centerTube.rotation.z = Math.PI / 2;
+      screwGroup.add(centerTube);
 
-      const flightMat = new THREE.MeshStandardMaterial({ color: 0xf97316, emissive: 0xea580c, emissiveIntensity: 0.5 });
-      for (let x = -1.0; x <= 1.0; x += 0.22) {
-        const disk = regMesh(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.045, 8, 20), flightMat), key);
-        disk.rotation.y = Math.PI / 2 + 0.25;
-        disk.position.x = x;
-        innerGroup.add(disk);
+      const bladeMat = new THREE.MeshStandardMaterial({
+        color: 0xf97316,
+        emissive: 0xc2410c,
+        emissiveIntensity: 0.55
+      });
+      for (let x = -1.04; x <= 1.04; x += 0.2) {
+        const flight = addPart(new THREE.Mesh(new THREE.TorusGeometry(0.44, 0.045, 8, 24), bladeMat), k);
+        flight.rotation.y = Math.PI / 2 + 0.22;
+        flight.position.x = x;
+        screwGroup.add(flight);
       }
+      reactorScrew = screwGroup;
+      scene.add(reactorScrew);
 
-      reactorInnerScrew = innerGroup;
-      scene.add(reactorInnerScrew);
-
-      const ringMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4, metalness: 0.8 });
+      // Forged Riding Rings & Trunnion Roller Stations
       [1.1, 2.05, 3.0].forEach(rx => {
-        const tire = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.73, 0.73, 0.14, 28), ringMat), key);
+        const tire = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.74, 0.74, 0.14, 32), ringMat), k);
         tire.rotation.z = Math.PI / 2;
-        tire.position.set(rx, 0.05, 0);
+        tire.position.set(rx, 0.06, 0);
         scene.add(tire);
+
+        [-0.55, 0.55].forEach(rz => {
+          const trunnion = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.18, 16), drumSteel), k);
+          trunnion.rotation.z = Math.PI / 2;
+          trunnion.position.set(rx, -0.52, rz);
+          scene.add(trunnion);
+        });
       });
 
-      for (let i = 0; i < 7; i++) {
+      // Burner Flame Cones
+      for (let i = 0; i < 8; i++) {
         const fMat = new THREE.MeshStandardMaterial({
           color: 0xfbbf24,
-          emissive: 0xf97316,
-          emissiveIntensity: 1.4,
-          transparent: true,
-          opacity: 0.85
+          emissive: 0xea580c,
+          emissiveIntensity: 1.5
         });
-        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 8), fMat);
-        cone.position.set(1.35 + i * 0.23, -0.35, 0.25);
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.34, 8), fMat);
+        cone.position.set(1.25 + i * 0.22, -0.34, 0.25);
         scene.add(cone);
-        flameMeshes.push(cone);
+        burnerFlames.push(cone);
       }
     }
 
-    // 05: Synthesegas- & Leittechnik
-    function createSyngasAndPLC() {
-      const key = 'syngas';
-
-      const scrubMat = new THREE.MeshStandardMaterial({ color: 0x71717a, roughness: 0.3, metalness: 0.7 });
-      const scrubber = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.75, 24), scrubMat), key);
-      scrubber.position.set(3.6, 0.1, -0.48);
-      scene.add(scrubber);
-
-      const cone = regMesh(new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.5, 24), scrubMat), key);
-      cone.rotation.x = Math.PI;
-      cone.position.set(3.6, -1.0, -0.48);
-      scene.add(cone);
-
+    // 05: Syngas Scrubber, Return Piping & PLC Control Cabinet
+    function buildSyngasAssembly() {
+      const k = 'syngas';
+      const vesselMat = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, roughness: 0.28, metalness: 0.8 });
+      const darkSteel = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.45, metalness: 0.7 });
       const glassPipeMat = new THREE.MeshStandardMaterial({
-        color: 0xa1a1aa,
+        color: 0xd4d4d8,
         transparent: true,
-        opacity: 0.45,
+        opacity: 0.4,
         roughness: 0.1
       });
-      const syngasPipe = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.65, 16), glassPipeMat), key);
-      syngasPipe.rotation.z = Math.PI / 2;
-      syngasPipe.position.set(2.8, 0.85, -0.48);
-      scene.add(syngasPipe);
 
-      const cabMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, roughness: 0.4, metalness: 0.4 });
-      const cabinet = regMesh(new THREE.Mesh(new THREE.BoxGeometry(0.78, 1.52, 0.48), cabMat), key);
-      cabinet.position.set(3.75, -0.38, 0.62);
-      scene.add(cabinet);
+      // Vertical Cyclone Scrubber Column & Conical Hopper
+      const column = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.8, 24), vesselMat), k);
+      column.position.set(3.6, 0.12, -0.48);
+      scene.add(column);
 
-      const hmiMat = new THREE.MeshStandardMaterial({ color: 0xfafafa, emissive: 0x71717a, emissiveIntensity: 0.5 });
-      const hmi = regMesh(new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.5), hmiMat), key);
-      hmi.position.set(3.75, 0.05, 0.62);
-      scene.add(hmi);
+      const cone = addPart(new THREE.Mesh(new THREE.ConeGeometry(0.36, 0.52, 24), darkSteel), k);
+      cone.rotation.x = Math.PI;
+      cone.position.set(3.6, -1.04, -0.48);
+      scene.add(cone);
+
+      // Upper Syngas Return Manifold
+      const returnPipe = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 1.7, 16), glassPipeMat), k);
+      returnPipe.rotation.z = Math.PI / 2;
+      returnPipe.position.set(2.8, 0.88, -0.48);
+      scene.add(returnPipe);
+
+      // PLC Control Cabinet with HMI Screen & Status Beacon
+      const cabinetMat = new THREE.MeshStandardMaterial({ color: 0xe4e4e7, roughness: 0.35, metalness: 0.4 });
+      const plcBox = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.56, 0.5), cabinetMat), k);
+      plcBox.position.set(3.75, -0.36, 0.62);
+      scene.add(plcBox);
+
+      const screenMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.2 });
+      const hmiPanel = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.32, 0.52), screenMat), k);
+      hmiPanel.position.set(3.75, 0.08, 0.62);
+      scene.add(hmiPanel);
     }
 
-    // 06: Feststoff-Konditionierung
-    function createBriquetteOutput() {
-      const key = 'output';
+    // 06: Water-Cooled Char Auger & Briquetting Press
+    function buildOutputAssembly() {
+      const k = 'output';
+      const steelMat = new THREE.MeshStandardMaterial({ color: 0x71717a, roughness: 0.35, metalness: 0.75 });
+      const bunkerMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.55, metalness: 0.5 });
+      const charMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.95 });
 
-      const augerMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.35, metalness: 0.75 });
-      const auger = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.65, 16), augerMat), key);
+      // Water-Cooled Discharge Screw with Cooling Jacket Rings
+      const auger = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.7, 18), steelMat), k);
       auger.rotation.z = Math.PI / 2 - 0.22;
       auger.position.set(4.1, -0.38, 0);
       scene.add(auger);
 
-      const boxMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.6, metalness: 0.4 });
-      const bunker = regMesh(new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.95, 1.2), boxMat), key);
-      bunker.position.set(5.1, -0.82, 0);
+      // Briquetting Press Head & Storage Bunker
+      const pressHead = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.65, 0.65), steelMat), k);
+      pressHead.position.set(4.75, -0.45, 0);
+      scene.add(pressHead);
+
+      const bunker = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.96, 1.22), bunkerMat), k);
+      bunker.position.set(5.15, -0.82, 0);
       scene.add(bunker);
 
-      const charMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.95 });
-      for (let i = 0; i < 14; i++) {
-        const brik = regMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.16, 8), charMat), key);
-        brik.position.set(
+      // Cylindrical Carbon Briquettes in Output Bunker
+      for (let i = 0; i < 16; i++) {
+        const briq = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.16, 10), charMat), k);
+        briq.position.set(
           4.85 + (i % 3) * 0.22,
-          -0.32 + Math.floor(i / 6) * 0.12,
-          -0.25 + ((i * 7) % 4) * 0.16
+          -0.3 + Math.floor(i / 6) * 0.11,
+          -0.26 + ((i * 5) % 4) * 0.16
         );
-        brik.rotation.set(i, i * 0.5, 0);
-        scene.add(brik);
+        briq.rotation.set(i * 0.7, i * 0.4, 0);
+        scene.add(briq);
       }
     }
 
-    function createRealisticWasteStream() {
-      const geo = new THREE.DodecahedronGeometry(0.16, 0);
-      for (let i = 0; i < 36; i++) {
-        const mat = new THREE.MeshStandardMaterial({
-          color: 0xa1a1aa,
-          roughness: 0.7,
-          metalness: 0.1
-        });
+    // Animated Waste, Metal & Syngas Streams
+    function buildProcessStreams() {
+      const geo = new THREE.DodecahedronGeometry(0.15, 0);
+      for (let i = 0; i < 38; i++) {
+        const mat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, roughness: 0.7 });
         const item = new THREE.Mesh(geo, mat);
         item.castShadow = true;
         item.userData = {
-          t: i / 36,
-          offsetZ: (Math.random() - 0.5) * 0.45,
-          rotSpeed: (Math.random() - 0.5) * 0.12,
-          rawColor: [0xa1a1aa, 0xd4d4d8, 0x71717a, 0xa8a29e][i % 4]
+          t: i / 38,
+          zOff: (Math.random() - 0.5) * 0.44,
+          spin: (Math.random() - 0.5) * 0.12,
+          initHex: [0xd4d4d8, 0xa1a1aa, 0x71717a, 0xe4e4e7][i % 4]
         };
         scene.add(item);
-        wasteItems.push(item);
+        wasteParticles.push(item);
       }
 
-      const metalGeo = new THREE.OctahedronGeometry(0.07, 0);
+      const metalGeo = new THREE.OctahedronGeometry(0.065, 0);
       for (let i = 0; i < 10; i++) {
-        const isAlu = i % 2 === 0;
+        const isAl = i % 2 === 0;
         const mMat = new THREE.MeshStandardMaterial({
-          color: isAlu ? 0x38bdf8 : 0xfacc15,
+          color: isAl ? 0x38bdf8 : 0xfacc15,
           metalness: 0.9,
           roughness: 0.2
         });
         const m = new THREE.Mesh(metalGeo, mMat);
-        m.userData = { phase: i / 10, isAlu };
+        m.userData = { p: i / 10, isAl };
         scene.add(m);
-        metalSparks.push(m);
+        metalParticles.push(m);
       }
 
-      const gasGeo = new THREE.SphereGeometry(0.055, 8, 8);
+      const gasGeo = new THREE.SphereGeometry(0.05, 8, 8);
       for (let i = 0; i < 12; i++) {
         const gMat = new THREE.MeshStandardMaterial({
           color: 0x22c55e,
@@ -1446,153 +1427,151 @@
         const g = new THREE.Mesh(gasGeo, gMat);
         g.userData = { p: i / 12 };
         scene.add(g);
-        syngasBubbles.push(g);
+        gasParticles.push(g);
       }
     }
 
-    function updateWasteStream(time) {
-      wasteItems.forEach(item => {
-        item.userData.t += 0.0019;
+    function updateStreams(elapsed) {
+      wasteParticles.forEach(item => {
+        item.userData.t += 0.0018;
         if (item.userData.t > 1) item.userData.t = 0;
 
         const t = item.userData.t;
-        item.rotation.x += item.userData.rotSpeed;
-        item.rotation.y += item.userData.rotSpeed;
+        item.rotation.x += item.userData.spin;
+        item.rotation.y += item.userData.spin;
 
         if (t < 0.16) {
-          const localT = t / 0.16;
-          item.position.set(-4.6 + (localT - 0.5) * 0.4, 1.35 - localT * 1.15, item.userData.offsetZ);
+          // Raw Municipal Waste in Hopper
+          const lt = t / 0.16;
+          item.position.set(-4.6 + (lt - 0.5) * 0.35, 1.38 - lt * 1.15, item.userData.zOff);
           item.scale.set(1.25, 0.95, 1.15);
-          item.material.color.setHex(item.userData.rawColor);
+          item.material.color.setHex(item.userData.initHex);
           item.material.emissive.setHex(0x000000);
         } else if (t < 0.38) {
-          const localT = (t - 0.16) / 0.22;
-          const x = -3.7 + localT * 2.3;
-          const y = -0.58 + localT * 0.5;
-          item.position.set(x, y, item.userData.offsetZ * 0.7);
-          item.scale.set(0.48, 0.48, 0.48);
-          item.material.color.setHex(0xb45309);
+          // Shredded Granulate on Conveyor
+          const lt = (t - 0.16) / 0.22;
+          item.position.set(-3.7 + lt * 2.3, -0.56 + lt * 0.5, item.userData.zOff * 0.7);
+          item.scale.set(0.46, 0.46, 0.46);
+          item.material.color.setHex(0xa16207);
           item.material.emissive.setHex(0x000000);
         } else if (t < 0.56) {
-          const localT = (t - 0.38) / 0.18;
-          const x = -1.25 + localT * 1.95;
-          item.position.set(x, -0.2 + Math.sin(localT * 12) * 0.05, item.userData.offsetZ * 0.4);
-          item.scale.set(0.44, 0.44, 0.44);
-          item.material.color.setHex(0x92400e);
+          // Thermal Drying
+          const lt = (t - 0.38) / 0.18;
+          item.position.set(-1.25 + lt * 1.95, -0.2 + Math.sin(lt * 12) * 0.04, item.userData.zOff * 0.4);
+          item.scale.set(0.42, 0.42, 0.42);
+          item.material.color.setHex(0x854d0e);
           item.material.emissive.setHex(0x000000);
         } else if (t < 0.84) {
-          const localT = (t - 0.56) / 0.28;
-          const x = 0.85 + localT * 2.35;
-          const angle = localT * Math.PI * 6 + time * 2;
-          item.position.set(x, 0.02 + Math.sin(angle) * 0.22, Math.cos(angle) * 0.22);
-          item.scale.set(0.42, 0.42, 0.42);
+          // Pyrolysis Carbonization in Rotary Drum
+          const lt = (t - 0.56) / 0.28;
+          const angle = lt * Math.PI * 6 + elapsed * 2;
+          item.position.set(0.85 + lt * 2.35, 0.04 + Math.sin(angle) * 0.22, Math.cos(angle) * 0.22);
+          item.scale.set(0.4, 0.4, 0.4);
 
-          if (localT < 0.65) {
-            item.material.color.setHex(0xff4500);
+          if (lt < 0.65) {
+            item.material.color.setHex(0xef4444);
             item.material.emissive.setHex(0xdc2626);
             item.material.emissiveIntensity = 1.1;
           } else {
             item.material.color.setHex(0x27272a);
             item.material.emissive.setHex(0x7c2d12);
-            item.material.emissiveIntensity = 0.3;
+            item.material.emissiveIntensity = 0.25;
           }
         } else {
-          const localT = (t - 0.84) / 0.16;
-          const x = 3.35 + localT * 1.75;
-          const y = -0.15 - localT * 0.55;
-          item.position.set(x, y, item.userData.offsetZ * 0.5);
-          item.scale.set(0.52, 0.38, 0.52);
-          item.material.color.setHex(0x18181b);
+          // Compressed Carbon Briquettes
+          const lt = (t - 0.84) / 0.16;
+          item.position.set(3.35 + lt * 1.8, -0.16 - lt * 0.55, item.userData.zOff * 0.5);
+          item.scale.set(0.5, 0.36, 0.5);
+          item.material.color.setHex(0x09090b);
           item.material.emissive.setHex(0x000000);
         }
       });
 
-      metalSparks.forEach(m => {
-        m.userData.phase += 0.012;
-        if (m.userData.phase > 1) m.userData.phase = 0;
-        const p = m.userData.phase;
-        const targetX = m.userData.isAlu ? -1.8 : -2.65;
-        m.position.set(
-          targetX + (1 - p) * 0.25,
-          0.05 - p * 0.95,
-          p * 0.58
-        );
+      metalParticles.forEach(m => {
+        m.userData.p += 0.012;
+        if (m.userData.p > 1) m.userData.p = 0;
+        const p = m.userData.p;
+        const tx = m.userData.isAl ? -1.82 : -2.68;
+        m.position.set(tx + (1 - p) * 0.24, 0.06 - p * 0.96, p * 0.58);
         m.rotation.x += 0.1;
       });
 
-      syngasBubbles.forEach(g => {
+      gasParticles.forEach(g => {
         g.userData.p += 0.015;
         if (g.userData.p > 1) g.userData.p = 0;
-        const p = g.userData.p;
-        g.position.set(3.6 - p * 1.55, 0.85, -0.48);
+        g.position.set(3.6 - g.userData.p * 1.55, 0.88, -0.48);
       });
     }
 
-    function handleCanvasPick(event) {
+    function pickMesh(event) {
       const box = document.getElementById('three-canvas');
       const rect = box.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / box.clientWidth) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / box.clientHeight) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const hits = raycaster.intersectObjects(clickableMeshes, false);
-      if (hits.length > 0 && hits[0].object.userData.partKey) {
-        selectPart(hits[0].object.userData.partKey);
+      const hits = raycaster.intersectObjects(partMeshes, false);
+      if (hits.length > 0 && hits[0].object.userData.station) {
+        selectStation(hits[0].object.userData.station);
       }
     }
 
-    function selectPart(key) {
-      activeKey = key;
-      const info = STATION_DATA[key];
+    function selectStation(key) {
+      currentKey = key;
+      const data = STATIONS[key];
 
-      document.querySelectorAll('.mod-btn').forEach(b => {
-        b.classList.toggle('active', b.getAttribute('data-part') === key);
+      document.querySelectorAll('.station-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-key') === key);
       });
 
-      clickableMeshes.forEach(m => {
-        const mat = m.material;
-        if (key === 'all' || m.userData.partKey === key) {
-          mat.color.setHex(m.userData.origColor);
-          mat.transparent = m.userData.origTransparent;
-          mat.opacity = m.userData.origOpacity;
+      partMeshes.forEach(mesh => {
+        const mat = mesh.material;
+        if (key === 'all' || mesh.userData.station === key) {
+          mat.color.setHex(mesh.userData.baseHex);
+          mat.transparent = mesh.userData.baseTrans;
+          mat.opacity = mesh.userData.baseOpacity;
         } else {
           mat.transparent = true;
-          mat.opacity = 0.14;
+          mat.opacity = 0.12;
         }
       });
 
-      camGoal.set(info.cam.x, info.cam.y, info.cam.z);
-      lookGoal.set(info.target.x, info.target.y, info.target.z);
+      camTargetPos.set(data.cam.x, data.cam.y, data.cam.z);
+      camLookAtPos.set(data.target.x, data.target.y, data.target.z);
 
-      document.getElementById('i-tag').textContent = info.tag;
-      document.getElementById('i-title').textContent = info.title;
-      document.getElementById('i-desc').textContent = info.desc;
+      document.getElementById('status-state').textContent = data.state;
+      document.getElementById('status-instruction').textContent = data.hint;
+      document.getElementById('insp-code').textContent = data.code;
+      document.getElementById('insp-title').textContent = data.title;
+      document.getElementById('insp-desc').textContent = data.desc;
 
-      document.getElementById('i-specs').innerHTML = info.specs.map(s => `
-        <div class="spec-row">
-          <span class="spec-key">${s[0]}</span>
-          <span class="spec-val">${s[1]}</span>
+      document.getElementById('insp-specs').innerHTML = data.specs.map(row => `
+        <div class="data-row">
+          <span class="data-key">${row[0]}</span>
+          <span class="data-val">${row[1]}</span>
         </div>
       `).join('');
     }
 
-    function stepPart(dir) {
-      const idx = ORDER.indexOf(activeKey);
-      const next = (idx + dir + ORDER.length) % ORDER.length;
-      selectPart(ORDER[next]);
+    function stepStation(dir) {
+      const idx = KEYS.indexOf(currentKey);
+      const nextIdx = (idx + dir + KEYS.length) % KEYS.length;
+      selectStation(KEYS[nextIdx]);
     }
 
     function toggleShell() {
-      shellShown = !shellShown;
-      shellGroup.visible = shellShown;
-      document.getElementById('btn-shell').textContent =
-        shellShown ? "Containerrahmen: Ein" : "Containerrahmen: Aus";
+      shellVisible = !shellVisible;
+      containerShellGroup.visible = shellVisible;
+      const btn = document.getElementById('btn-shell');
+      btn.classList.toggle('active', shellVisible);
+      btn.textContent = shellVisible ? "Containerrahmen: Sichtbar" : "Containerrahmen: Ausgeblendet";
     }
 
-    function toggleAnim() {
-      animRunning = !animRunning;
-      document.getElementById('btn-anim').textContent =
-        animRunning ? "Prozesssimulation: Aktiv" : "Prozesssimulation: Pausiert";
+    function toggleFlow() {
+      flowActive = !flowActive;
+      const btn = document.getElementById('btn-flow');
+      btn.classList.toggle('active', flowActive);
+      btn.textContent = flowActive ? "Materialfluss: Aktiv" : "Materialfluss: Pausiert";
     }
 
     function onResize() {
@@ -1605,43 +1584,33 @@
 
     const clock = new THREE.Clock();
 
-    function animateLoop() {
-      requestAnimationFrame(animateLoop);
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
       const elapsed = clock.getElapsedTime();
 
-      camera.position.lerp(camGoal, 0.06);
-      controls.target.lerp(lookGoal, 0.08);
+      camera.position.lerp(camTargetPos, 0.07);
+      controls.target.lerp(camLookAtPos, 0.09);
       controls.update();
 
-      if (animRunning) {
-        shredderShafts.forEach(s => {
-          s.group.rotation.z += 0.045 * s.dir;
+      if (flowActive) {
+        shredderRotors.forEach(r => {
+          r.group.rotation.z += 0.045 * r.dir;
+        });
+        if (reactorScrew) reactorScrew.rotation.x += 0.025;
+        if (eddyRotor) eddyRotor.rotation.z -= 0.09;
+        if (burnerLight) burnerLight.intensity = 2.2 + Math.sin(elapsed * 14) * 0.4;
+
+        burnerFlames.forEach((f, idx) => {
+          f.scale.y = 0.85 + Math.sin(elapsed * 12 + idx) * 0.25;
         });
 
-        if (reactorInnerScrew) {
-          reactorInnerScrew.rotation.x += 0.025;
-        }
-
-        if (eddyWheel) {
-          eddyWheel.rotation.z -= 0.09;
-        }
-
-        if (fireLight) {
-          fireLight.intensity = 2.1 + Math.sin(elapsed * 14) * 0.45;
-        }
-
-        flameMeshes.forEach((f, idx) => {
-          f.scale.y = 0.85 + Math.sin(elapsed * 12 + idx) * 0.28;
-        });
-
-        updateWasteStream(elapsed);
+        updateStreams(elapsed);
       }
 
       renderer.render(scene, camera);
     }
 
-    window.addEventListener('DOMContentLoaded', initScene);
+    window.addEventListener('DOMContentLoaded', initViewer);
   </script>
-
 </body>
 </html>
