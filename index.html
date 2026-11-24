@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RHYPOS — Mobile Pyrolyse-Anlage im 40-Fuß-Container</title>
+  <meta name="description" content="RHYPOS entwickelt eine mobile 40-Fuß-Containeranlage zur Zerkleinerung, Metallabscheidung, Trocknung und autothermen Pyrolyse von unvorsortiertem Siedlungsabfall.">
+  <link rel="icon" type="image/jpeg" href="logo-mark.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="#" class="brand-link" aria-label="RHYPOS Startseite">
+          <img src="logo-rhypos.jpg" alt="RHYPOS Logo" class="brand-logo">
+        </a>
+
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-expanded="false" aria-controls="main-nav">Menü</button>
+
+        <nav class="main-nav" id="main-nav">
+          <a href="#simulation">3D-Anlage</a>
+          <a href="#system">Verfahren</a>
+          <a href="#ertrag">Ertragsmodell</a>
+          <a href="#planung">Projektplan</a>
+          <a href="mailto:rhypolysis@gmail.com" class="nav-cta">Projektanfrage</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Dezentrale Abfallverwertung</span>
+            <h1>Aus unvorsortiertem Siedlungsabfall wird Energie – im 40-Fuß-Container.</h1>
+            <p class="hero-lead">
+              RHYPOS vereint mechanische Zerkleinerung, vollautomatische Metallabscheidung, Abwärmetrocknung und autotherme Pyrolyse in einer transportablen ISO-Anlage – ohne manuelle Vorsortierung vor Ort.
+            </p>
+            <div class="hero-actions">
+              <a href="#simulation" class="btn-primary">3D-Prozessmodell öffnen</a>
+              <a href="mailto:rhypolysis@gmail.com" class="btn-secondary">Kontakt aufnehmen</a>
+            </div>
+          </div>
+
+          <div class="hero-specs" aria-label="Technische Kerndaten">
+            <div class="spec-row">
+              <span class="spec-label">Bauform</span>
+              <span class="spec-value">40ft ISO High-Cube</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Vorsortierung</span>
+              <span class="spec-value">0 % erforderlich</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Volumenreduktion</span>
+              <span class="spec-value">85 – 90 %</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Metallrückgewinnung</span>
+              <span class="spec-value">Fe &amp; Al (100 %)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Prozessenergie</span>
+              <span class="spec-value">Autotherm (Eigengas)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive 3D Plant Explorer -->
+    <section class="explorer-section" id="simulation">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Interaktives 3D-Anlagenmodell</h2>
+            <p class="section-subtitle">
+              Wählen Sie eine Baugruppe in der Leiste oder klicken Sie direkt auf eine Komponente im Container, um Details zu Funktion und Auslegung einzusehen.
+            </p>
+          </div>
+          <div class="viewer-toolbar">
+            <button class="tool-btn active" id="btn-shell" onclick="toggleShell()">Containerrahmen: Ein</button>
+            <button class="tool-btn active" id="btn-flow" onclick="toggleFlow()">Materialfluss: Aktiv</button>
+            <button class="tool-btn" onclick="selectStation('all')">Ansicht zurücksetzen</button>
+          </div>
+        </div>
+
+        <div class="workbench">
+          <div class="station-tabs" role="tablist" aria-label="Anlagenstationen">
+            <button class="station-tab active" data-key="all" onclick="selectStation('all')">
+              <span class="tab-num">00</span>
+              <span class="tab-name">Gesamtsystem</span>
+            </button>
+            <button class="station-tab" data-key="shredder" onclick="selectStation('shredder')">
+              <span class="tab-num">01</span>
+              <span class="tab-name">Zerkleinerung</span>
+            </button>
+            <button class="station-tab" data-key="separator" onclick="selectStation('separator')">
+              <span class="tab-num">02</span>
+              <span class="tab-name">Sortiersystem</span>
+            </button>
+            <button class="station-tab" data-key="dryer" onclick="selectStation('dryer')">
+              <span class="tab-num">03</span>
+              <span class="tab-name">Trocknung</span>
+            </button>
+            <button class="station-tab" data-key="reactor" onclick="selectStation('reactor')">
+              <span class="tab-num">04</span>
+              <span class="tab-name">Pyrolysereaktor</span>
+            </button>
+            <button class="station-tab" data-key="syngas" onclick="selectStation('syngas')">
+              <span class="tab-num">05</span>
+              <span class="tab-name">Gasaufbereitung</span>
+            </button>
+            <button class="station-tab" data-key="output" onclick="selectStation('output')">
+              <span class="tab-num">06</span>
+              <span class="tab-name">Brikettierung</span>
+            </button>
+          </div>
+
+          <div class="workbench-body">
+            <div class="canvas-wrapper">
+              <div id="three-canvas"></div>
+              <div class="canvas-overlay-top">
+                <div class="status-pill" id="status-state">ANSICHT: GESAMTSYSTEM</div>
+                <div class="controls-hint">Links drehen · Rechts verschieben · Scrollen zoomen</div>
+              </div>
+              <div class="canvas-legend">
+                <div class="legend-item"><span class="swatch" style="background:#a8a29e;"></span> Rohabfall</div>
+                <div class="legend-item"><span class="swatch" style="background:#a16207;"></span> Granulat</div>
+                <div class="legend-item"><span class="swatch" style="background:#0284c7;"></span> Fe/Al-Metalle</div>
+                <div class="legend-item"><span class="swatch" style="background:#dc2626;"></span> Pyrolysezone</div>
+                <div class="legend-item"><span class="swatch" style="background:#16a34a;"></span> Synthesegas</div>
+                <div class="legend-item"><span class="swatch" style="background:#1c1917;"></span> Pyrolysekoks</div>
+              </div>
+            </div>
+
+            <aside class="inspector-panel">
+              <div>
+                <span class="inspector-code" id="insp-code">BAUGRUPPE 00 / 06</span>
+                <h3 class="inspector-title" id="insp-title">Integrierte 40-Fuß-Prozesslinie</h3>
+                <p class="inspector-desc" id="insp-desc"></p>
+                <div class="inspector-specs" id="insp-specs"></div>
+              </div>
+              <div class="inspector-nav">
+                <button class="tool-btn" onclick="stepStation(-1)">← Vorherige</button>
+                <button class="tool-btn" onclick="stepStation(1)">Nächste →</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Architecture -->
+    <section class="content-section" id="system">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="eyebrow">Verfahrenstechnik</span>
+            <h2 class="section-title">Kontinuierlicher Durchlaufbetrieb in drei Stufen</h2>
+            <p class="section-subtitle">
+              Vom unsortierten Rohabfall bis zum verdichteten Kohlenstoff-Brikett – vollständig gekapselt und energetisch autark.
+            </p>
+          </div>
+        </div>
+
+        <div class="process-list">
+          <article class="process-step">
+            <span class="step-index">STUFE 01 — MECHANISCH</span>
+            <h3>Aufschluss &amp; Metallseparierung</h3>
+            <p>
+              Die vierwellige Zerkleinerungsanlage bricht gemischten Siedlungsabfall auf unter 30 mm Korngröße. Nachgeschaltete Überbandmagnet- und Wirbelstromsysteme entziehen Eisen- und Aluminiumfraktionen vor dem thermischen Eintritt.
+            </p>
+          </article>
+          <article class="process-step">
+            <span class="step-index">STUFE 02 — THERMISCH</span>
+            <h3>Abwärmetrocknung &amp; Karbonisierung</h3>
+            <p>
+              Ein doppelwandiger Schneckenförderer nutzt die Reaktorabwärme zur Reduktion der Eingangsfeuchte. Im Drehrohrreaktor wird das Material unter Sauerstoffausschluss bei 500 bis 650 °C in Synthesegas und Kohlenstoffkoks gespalten.
+            </p>
+          </article>
+          <article class="process-step">
+            <span class="step-index">STUFE 03 — RÜCKFÜHRUNG</span>
+            <h3>Gaskreislauf &amp; Brikettierung</h3>
+            <p>
+              Das im Zyklon gereinigte Synthesegas speist die Unterfeuerung des Reaktors für den autothermen Betrieb. Der gekühlte Pyrolysekoks wird am Austrag staubfrei zu formstabilen Briketts verpresst.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Revenue Model -->
+    <section class="content-section" id="ertrag">
+      <div class="container">
+        <div class="split-layout">
+          <div class="split-intro">
+            <span class="eyebrow">Wirtschaftlichkeit</span>
+            <h2 class="section-title">Drei komplementäre Einnahmequellen</h2>
+            <p>
+              RHYPOS adressiert Regionen ohne eigene Müllverbrennung – darunter Inselgemeinden, abgelegene Kommunen und größere Hotelresorts. Die Anlage senkt Entsorgungskosten und generiert gleichzeitig verwertbare Rohstoffe und Energie.
+            </p>
+          </div>
+
+          <div class="revenue-items">
+            <div class="revenue-item">
+              <div class="rev-num">01 /</div>
+              <div>
+                <h3>Anlagenverkauf &amp; saisonales Leasing</h3>
+                <p>Direktverkauf oder flexibles Bereitstellungs-Leasing kompletter Container-Einheiten für Kommunen, Inseln und Tourismusbetriebe.</p>
+              </div>
+            </div>
+            <div class="revenue-item">
+              <div class="rev-num">02 /</div>
+              <div>
+                <h3>Sortenreines Metall-Recycling (Fe &amp; Al)</h3>
+                <p>Verkauf der automatisch abgeschiedenen Eisen- und Aluminiumfraktionen an regionale Metallverwerter und Schmelzwerke.</p>
+              </div>
+            </div>
+            <div class="revenue-item">
+              <div class="rev-num">03 /</div>
+              <div>
+                <h3>Energieträger &amp; Koks-Briketts</h3>
+                <p>Vermarktung der verdichteten Kohlenstoff-Briketts als Industriebrennstoff sowie Nutzung überschüssigen Synthesegases zur Strom- und Wärmeerzeugung.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sourcing & Development Phases -->
+    <section class="content-section" id="planung">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="eyebrow">Umsetzung &amp; Kapitalbedarf</span>
+            <h2 class="section-title">Beschaffung &amp; Entwicklungsphasen</h2>
+          </div>
+        </div>
+
+        <div class="roadmap-grid">
+          <div class="panel-card">
+            <span class="capital-badge">Pilotcontainer: 200'000 – 380'000 CHF</span>
+            <h3>Zweistufiges Komponenten-Sourcing</h3>
+            <p>Kombination aus zertifizierten europäischen Kernbaugruppen und standardisiertem Stahlbau zur Erfüllung aller EU-Sicherheitsnormen.</p>
+            <div class="kv-table">
+              <div class="kv-row">
+                <strong>Kernmodule (EU / CE / ATEX)</strong>
+                <span>Zerkleinerer, Reaktor, Gasbrenner, SPS-Sensorik</span>
+              </div>
+              <div class="kv-row">
+                <strong>Peripherie &amp; Struktur</strong>
+                <span>40ft-ISO-Container, Tragrahmen, Trichter, Förderbänder</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Entwicklungs- und Bauphasen</h3>
+            <p>Schrittweise Umsetzung zur technischen Risikominimierung vor dem Hardware-Einkauf.</p>
+            <div class="kv-table">
+              <div class="kv-row">
+                <strong><span class="phase-tag active">Aktiv</span>Phase 1</strong>
+                <span>Digitaler 3D-Prototyp &amp; Schnittstellen-Auslegung</span>
+              </div>
+              <div class="kv-row">
+                <strong><span class="phase-tag">Geplant</span>Phase 2</strong>
+                <span>Beschaffung, Aufbau 1. Pilotcontainer &amp; CE/ATEX-Abnahme</span>
+              </div>
+              <div class="kv-row">
+                <strong><span class="phase-tag">Rollout</span>Phase 3</strong>
+                <span>Dauerbetrieb in Zielregion &amp; Serienfertigung</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="logo-mark.jpg" alt="RHYPOS Signet" class="footer-mark">
+          <div class="footer-meta">
+            <strong>RHYPOS</strong>
+            <span>Léon Schürch — Dezentrale Pyrolysesysteme</span>
+          </div>
+        </div>
+        <div class="footer-contact">
+          <span>Kontakt für Investoren &amp; Partner:</span>
+          <a href="mailto:rhypolysis@gmail.com" class="footer-email">rhypolysis@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- INTERACTIVE THREE.JS INDUSTRIAL CONTAINER MODEL                   -->
+  <!-- ================================================================= -->
+  <script>
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mainNav = document.getElementById('main-nav');
+    if (mobileBtn && mainNav) {
+      mobileBtn.addEventListener('click', () => {
+        const isOpen = mainNav.classList.toggle('open');
+        mobileBtn.setAttribute('aria-expanded', String(isOpen));
+      });
+      mainNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mainNav.classList.remove('open');
+          mobileBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    const STATIONS = {
+      all: {
+        code: "BAUGRUPPE 00 / 06",
+        state: "ANSICHT: GESAMTSYSTEM",
+        title: "Integrierte 40-Fuß-Prozesslinie",
+        desc: "Alle sechs Baugruppen sind in einem 12,19 m langen ISO-Container verbaut. Der Abfall wird links aufgegeben, zerkleinert, entmetallisiert, getrocknet und im Reaktor zu Synthesegas und Koks-Briketts verarbeitet.",
+        specs: [
+          ["Container-Außenmaße", "12,19 m × 2,44 m × 2,90 m"],
+          ["Aufgabematerial", "Unvorsortierter Siedlungsabfall"],
+          ["Volumenreduktion", "85 – 90 %"],
+          ["Sicherheitsstandard", "CE- & ATEX-konforme Auslegung"]
+        ],
+        cam: { x: 0.2, y: 3.4, z: 10.4 },
+        target: { x: 0.1, y: -0.1, z: 0 }
+      },
+      shredder: {
+        code: "BAUGRUPPE 01 / 06",
+        state: "01: ZERKLEINERUNGSANLAGE",
+        title: "Mehrwellen-Zerkleinerungsanlage",
+        desc: "Vier gegenläufig rotierende Schneidwellen mit gehärteten Messerscheiben ziehen den Rohabfall über den Aufgabetrichter ein. Ein hydraulischer Nachdrücker presst sperriges Material an die Rotoren.",
+        specs: [
+          ["Maschinenkategorie", "4-Wellen-Industriezerkleinerer"],
+          ["Zielkorngröße", "< 30 mm homogenes Granulat"],
+          ["Störstoffschutz", "Lastabhängige Reversierautomatik"],
+          ["Antrieb", "2× Getriebemotoren mit Kupplung"]
+        ],
+        cam: { x: -4.4, y: 1.7, z: 3.6 },
+        target: { x: -4.5, y: 0.1, z: 0 }
+      },
+      separator: {
+        code: "BAUGRUPPE 02 / 06",
+        state: "02: SORTIERSYSTEM",
+        title: "Magnet- & Wirbelstrom-Sortiersystem",
+        desc: "Ein Stollen-Steigförderband transportiert das Granulat unter einem Überbandmagneten hindurch, der Eisenmetalle (Fe) aushebt. Am Bandkopf stößt ein Hochfrequenz-Wirbelstromrotor Aluminium (Al) in den zweiten Sammelbehälter ab.",
+        specs: [
+          ["Stufe 1", "Permanent-Überbandmagnet (Fe)"],
+          ["Stufe 2", "Exzentrischer Polrad-Scheider (Al)"],
+          ["Sortierreinheit", "> 98 % Metallabscheidung"],
+          ["Funktion", "Reaktorschutz & Rohstoffgewinnung"]
+        ],
+        cam: { x: -2.3, y: 1.4, z: 3.5 },
+        target: { x: -2.3, y: -0.2, z: 0.1 }
+      },
+      dryer: {
+        code: "BAUGRUPPE 03 / 06",
+        state: "03: TROCKNUNGSSYSTEM",
+        title: "Thermisches Fördersystem (Vortrockner)",
+        desc: "Das entmetallisierte Granulat durchläuft einen isolierten Doppelmantel-Schneckenförderer. Heiße Abgase aus der Reaktor-Brennkammer strömen durch den Außenmantel und verdampfen die Restfeuchte.",
+        specs: [
+          ["Bauart", "Doppelmantel-Heizschnecke"],
+          ["Wärmequelle", "100 % Reaktor-Abwärmenutzung"],
+          ["Brüdenabzug", "Kondensatabscheidung am Domstutzen"],
+          ["Fremdenergiebedarf", "0 kW im Dauerbetrieb"]
+        ],
+        cam: { x: -0.3, y: 1.3, z: 3.4 },
+        target: { x: -0.3, y: -0.2, z: 0 }
+      },
+      reactor: {
+        code: "BAUGRUPPE 04 / 06",
+        state: "04: PYROLYSEREAKTOR",
+        title: "Autothermer Pyrolyse-Drehrohrreaktor",
+        desc: "Das vorgetrocknete Material wird über eine gasdichte Zellradschleuse in die rotierende Reaktortrommel geführt. Unter Sauerstoffausschluss spaltet die indirekte Gasbrenner-Unterfeuerung den Abfall bei 550 °C in Synthesegas und Kohlenstoff.",
+        specs: [
+          ["Prozesstemperatur", "500 °C – 650 °C (sauerstofffrei)"],
+          ["Lagerung", "2× Schwerlast-Laufrollenstationen"],
+          ["Beheizung", "Indirekte Synthesegas-Brennerleiste"],
+          ["Zertifizierung", "ATEX- & Druckgeräte-Auslegung"]
+        ],
+        cam: { x: 2.0, y: 1.4, z: 3.8 },
+        target: { x: 2.0, y: -0.1, z: 0 }
+      },
+      syngas: {
+        code: "BAUGRUPPE 05 / 06",
+        state: "05: GASAUFBEREITUNG & SPS",
+        title: "Zyklon-Gaswäscher & SPS-Steuerschrank",
+        desc: "Heißes Synthesegas strömt über den oberen Sammeldome in den Zyklonabscheider und Gaskühler. Gereinigtes Brenngas wird über die Rückführleitung direkt zu den Brennerdüsen unter dem Reaktor geleitet.",
+        specs: [
+          ["Aufbereitung", "Heißgaszyklon & Kondensatstufe"],
+          ["Gaskreislauf", "Direkte Rückführung zur Unterfeuerung"],
+          ["Prozesssteuerung", "SPS-Schaltschrank mit HMI-Panel"],
+          ["Überwachung", "Redundante Druck- & Gassensorik"]
+        ],
+        cam: { x: 3.5, y: 1.5, z: 3.6 },
+        target: { x: 3.5, y: 0.0, z: 0 }
+      },
+      output: {
+        code: "BAUGRUPPE 06 / 06",
+        state: "06: FESTSTOFF-KONDITIONIERUNG",
+        title: "Wasserkühlschnecke & Brikettierpresse",
+        desc: "Der feste Pyrolysekoks wird über eine wassergekühlte Austragsschnecke auf unter 50 °C heruntergekühlt und in der nachgeschalteten Stempelpresse zu formstabilen Koks-Briketts verdichtet.",
+        specs: [
+          ["Kühlsystem", "Geschlossene Wassermantelschnecke"],
+          ["Austragstemperatur", "< 50 °C"],
+          ["Endprodukt", "Verdichtete Kohlenstoff-Briketts"],
+          ["Verwertung", "Industriebrennstoff / Bodenkohle"]
+        ],
+        cam: { x: 4.9, y: 1.4, z: 3.5 },
+        target: { x: 4.8, y: -0.3, z: 0 }
+      }
+    };
+
+    const KEYS = ['all', 'shredder', 'separator', 'dryer', 'reactor', 'syngas', 'output'];
+    let currentKey = 'all';
+    let shellVisible = true;
+    let flowActive = true;
+
+    let scene, camera, renderer, controls, raycaster, mouse;
+    let containerShellGroup;
+    const partMeshes = [];
+    const shredderRotors = [];
+    let reactorScrew, eddyRotor, burnerLight;
+    const burnerFlames = [];
+    const wasteParticles = [];
+    const metalParticles = [];
+    const gasParticles = [];
+
+    const camTargetPos = new THREE.Vector3(0.2, 3.4, 10.4);
+    const camLookAtPos = new THREE.Vector3(0.1, -0.1, 0);
+
+    function initViewer() {
+      const container = document.getElementById('three-canvas');
+      if (!container || typeof THREE === 'undefined') return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xeceae3);
+      scene.fog = new THREE.Fog(0xeceae3, 20, 42);
+
+      camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
+      camera.position.copy(camTargetPos);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.maxPolarAngle = Math.PI / 2 + 0.02;
+      controls.minDistance = 2.0;
+      controls.maxDistance = 18;
+
+      // Clean Architectural Studio Lighting
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xc8c5ba, 0.95));
+
+      const keyLight = new THREE.DirectionalLight(0xfffdf8, 1.3);
+      keyLight.position.set(8, 16, 12);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.camera.near = 2;
+      keyLight.shadow.camera.far = 40;
+      keyLight.shadow.camera.left = -10;
+      keyLight.shadow.camera.right = 10;
+      keyLight.shadow.camera.top = 10;
+      keyLight.shadow.camera.bottom = -10;
+      scene.add(keyLight);
+
+      const backLight = new THREE.DirectionalLight(0xe2e8f0, 0.65);
+      backLight.position.set(-10, 8, -9);
+      scene.add(backLight);
+
+      burnerLight = new THREE.PointLight(0xff4500, 2.2, 4.2);
+      burnerLight.position.set(2.05, -0.35, 0.2);
+      scene.add(burnerLight);
+
+      // Studio Ground Plane & Subtle Engineering Grid
+      const groundGeo = new THREE.PlaneGeometry(60, 60);
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0xe6e4dc, roughness: 0.95, metalness: 0.0 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -1.56;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const grid = new THREE.GridHelper(24, 24, 0xc7c4b9, 0xdad7cd);
+      grid.position.y = -1.55;
+      scene.add(grid);
+
+      // Build Detailed 3D Assembly
+      buildISOContainer();
+      buildShredderAssembly();
+      buildSortingAssembly();
+      buildDryerAssembly();
+      buildReactorAssembly();
+      buildSyngasAssembly();
+      buildOutputAssembly();
+      buildProcessStreams();
+
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+
+      let downCoord = { x: 0, y: 0 };
+      renderer.domElement.addEventListener('pointerdown', e => {
+        downCoord = { x: e.clientX, y: e.clientY };
+      });
+      renderer.domElement.addEventListener('pointerup', e => {
+        if (Math.hypot(e.clientX - downCoord.x, e.clientY - downCoord.y) < 5) {
+          pickMesh(e);
+        }
+      });
+
+      window.addEventListener('resize', onResize);
+      selectStation('all');
+      renderLoop();
+    }
+
+    function addPart(mesh, key) {
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.userData.station = key;
+      mesh.userData.baseHex = mesh.material.color.getHex();
+      mesh.userData.baseOpacity = mesh.material.opacity !== undefined ? mesh.material.opacity : 1;
+      mesh.userData.baseTrans = mesh.material.transparent || false;
+      partMeshes.push(mesh);
+      return mesh;
+    }
+
+    // Detailed 40ft ISO High-Cube Container
+    function buildISOContainer() {
+      containerShellGroup = new THREE.Group();
+
+      const darkSteel = new THREE.MeshStandardMaterial({ color: 0x1e1e1c, roughness: 0.6, metalness: 0.55 });
+      const frameSteel = new THREE.MeshStandardMaterial({ color: 0x3a3a36, roughness: 0.4, metalness: 0.7 });
+      const castingSteel = new THREE.MeshStandardMaterial({ color: 0xd4d2c9, roughness: 0.3, metalness: 0.75 });
+
+      const floor = new THREE.Mesh(new THREE.BoxGeometry(12.2, 0.1, 2.44), darkSteel);
+      floor.position.set(0, -1.4, 0);
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      for (let x = -5.8; x <= 5.8; x += 0.6) {
+        const joist = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.1, 2.44), frameSteel);
+        joist.position.set(x, -1.48, 0);
+        scene.add(joist);
+      }
+
+      [-1.6, 1.6].forEach(fx => {
+        const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.12, 2.46), castingSteel);
+        pocket.position.set(fx, -1.48, 0);
+        scene.add(pocket);
+      });
+
+      const xs = [-6.05, 6.05];
+      const ys = [-1.38, 1.45];
+      const zs = [-1.17, 1.17];
+
+      xs.forEach(x => ys.forEach(y => zs.forEach(z => {
+        const casting = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), castingSteel);
+        casting.position.set(x, y, z);
+        containerShellGroup.add(casting);
+      })));
+
+      xs.forEach(x => zs.forEach(z => {
+        const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.82, 0.12), frameSteel);
+        pillar.position.set(x, 0.03, z);
+        containerShellGroup.add(pillar);
+      }));
+
+      ys.forEach(y => zs.forEach(z => {
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(12.1, 0.11, 0.11), frameSteel);
+        rail.position.set(0, y, z);
+        containerShellGroup.add(rail);
+      }));
+
+      ys.forEach(y => xs.forEach(x => {
+        const cross = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.11, 2.34), frameSteel);
+        cross.position.set(x, y, 0);
+        containerShellGroup.add(cross);
+      }));
+
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x575650,
+        roughness: 0.5,
+        metalness: 0.55,
+        transparent: true,
+        opacity: 0.2
+      });
+
+      for (let x = -5.75; x <= 5.75; x += 0.28) {
+        const rib = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.72, 0.06), wallMat);
+        rib.position.set(x, 0.03, -1.17);
+        containerShellGroup.add(rib);
+      }
+
+      [-0.56, 0.56].forEach(dz => {
+        const doorPanel = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.7, 1.06), wallMat);
+        doorPanel.position.set(6.05, 0.03, dz);
+        containerShellGroup.add(doorPanel);
+      });
+
+      [-0.85, -0.3, 0.3, 0.85].forEach(lz => {
+        const lockRod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.68, 8), castingSteel);
+        lockRod.position.set(6.1, 0.03, lz);
+        containerShellGroup.add(lockRod);
+      });
+
+      scene.add(containerShellGroup);
+    }
+
+    // 01: Multi-Shaft Shredder Assembly
+    function buildShredderAssembly() {
+      const k = 'shredder';
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x262624, roughness: 0.5, metalness: 0.65 });
+      const midMat = new THREE.MeshStandardMaterial({ color: 0x52524e, roughness: 0.35, metalness: 0.7 });
+      const lightSteel = new THREE.MeshStandardMaterial({ color: 0xc7c6be, roughness: 0.25, metalness: 0.82 });
+
+      [-5.3, -3.9].forEach(lx => {
+        [-0.65, 0.65].forEach(lz => {
+          const leg = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.95, 0.18), darkMat), k);
+          leg.position.set(lx, -0.88, lz);
+          scene.add(leg);
+        });
+      });
+
+      const subFrame = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 1.56), darkMat), k);
+      subFrame.position.set(-4.6, -0.4, 0);
+      scene.add(subFrame);
+
+      const chamber = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.65, 0.74, 1.5), midMat), k);
+      chamber.position.set(-4.6, 0.04, 0);
+      scene.add(chamber);
+
+      const cylBarrel = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.75, 14), lightSteel), k);
+      cylBarrel.rotation.z = Math.PI / 4;
+      cylBarrel.position.set(-5.35, 0.65, 0);
+      scene.add(cylBarrel);
+
+      const hopper = addPart(new THREE.Mesh(new THREE.CylinderGeometry(1.2, 0.8, 0.78, 4), lightSteel), k);
+      hopper.rotation.y = Math.PI / 4;
+      hopper.position.set(-4.6, 0.78, 0);
+      scene.add(hopper);
+
+      const rim = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.76, 0.08, 1.76), darkMat), k);
+      rim.position.set(-4.6, 1.18, 0);
+      scene.add(rim);
+
+      [-4.93, -4.71, -4.49, -4.27].forEach((sx, idx) => {
+        const rotorGroup = new THREE.Group();
+        rotorGroup.position.set(sx, 0.36, 0);
+
+        const axle = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.32, 12), lightSteel), k);
+        axle.rotation.x = Math.PI / 2;
+        rotorGroup.add(axle);
+
+        for (let z = -0.54; z <= 0.54; z += 0.11) {
+          const cutter = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.05, 6), lightSteel), k);
+          cutter.rotation.x = Math.PI / 2;
+          cutter.rotation.z = z * 4;
+          cutter.position.z = z;
+          rotorGroup.add(cutter);
+        }
+        scene.add(rotorGroup);
+        shredderRotors.push({ group: rotorGroup, dir: idx % 2 === 0 ? 1 : -1 });
+      });
+
+      [-0.42, 0.42].forEach(mz => {
+        const gearbox = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.38, 0.38), darkMat), k);
+        gearbox.position.set(-5.55, 0.04, mz);
+        scene.add(gearbox);
+
+        const motor = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.55, 16), midMat), k);
+        motor.rotation.z = Math.PI / 2;
+        motor.position.set(-5.95, 0.04, mz);
+        scene.add(motor);
+      });
+    }
+
+    // 02: Magnetic & Eddy-Current Sorting Assembly
+    function buildSortingAssembly() {
+      const k = 'separator';
+      const frameMat = new THREE.MeshStandardMaterial({ color: 0x3f3f3a, roughness: 0.45, metalness: 0.7 });
+      const beltMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1a, roughness: 0.9 });
+      const metalMat = new THREE.MeshStandardMaterial({ color: 0xc7c6be, roughness: 0.3, metalness: 0.8 });
+
+      const conveyorGroup = new THREE.Group();
+      conveyorGroup.position.set(-2.55, -0.4, 0);
+      conveyorGroup.rotation.z = 0.22;
+
+      const chassis = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.14, 0.92), frameMat), k);
+      conveyorGroup.add(chassis);
+
+      const belt = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.44, 0.05, 0.8), beltMat), k);
+      belt.position.y = 0.08;
+      conveyorGroup.add(belt);
+
+      for (let x = -1.1; x <= 1.1; x += 0.28) {
+        const cleat = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.76), frameMat), k);
+        cleat.position.set(x, 0.12, 0);
+        conveyorGroup.add(cleat);
+      }
+      scene.add(conveyorGroup);
+
+      const magBlock = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.38, 1.08), metalMat), k);
+      magBlock.position.set(-2.55, 0.26, 0);
+      magBlock.rotation.z = 0.22;
+      scene.add(magBlock);
+
+      [-2.9, -2.2].forEach(gx => {
+        const hanger = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.9, 8), frameMat), k);
+        hanger.position.set(gx, 0.65, -0.5);
+        scene.add(hanger);
+      });
+
+      eddyRotor = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.94, 20), metalMat), k);
+      eddyRotor.rotation.x = Math.PI / 2;
+      eddyRotor.position.set(-1.35, -0.12, 0);
+      scene.add(eddyRotor);
+
+      [-2.68, -1.82].forEach((bx, idx) => {
+        const binMat = new THREE.MeshStandardMaterial({
+          color: idx === 0 ? 0x52524e : 0x76766f,
+          roughness: 0.45,
+          metalness: 0.65
+        });
+        const bin = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.64, 0.78), binMat), k);
+        bin.position.set(bx, -1.02, 0.58);
+        scene.add(bin);
+      });
+    }
+
+    // 03: Thermal Drying Screw System
+    function buildDryerAssembly() {
+      const k = 'dryer';
+      const jacketMat = new THREE.MeshStandardMaterial({ color: 0xd6d4cb, roughness: 0.25, metalness: 0.85 });
+      const flangeMat = new THREE.MeshStandardMaterial({ color: 0x3f3f3a, roughness: 0.4, metalness: 0.75 });
+      const ductMat = new THREE.MeshStandardMaterial({ color: 0x9c9a90, roughness: 0.35, metalness: 0.8 });
+
+      const barrel = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 2.0, 24), jacketMat), k);
+      barrel.rotation.z = Math.PI / 2;
+      barrel.position.set(-0.3, -0.2, 0);
+      scene.add(barrel);
+
+      [-1.15, -0.55, 0.05, 0.62].forEach(fx => {
+        const flange = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.07, 24), flangeMat), k);
+        flange.rotation.z = Math.PI / 2;
+        flange.position.set(fx, -0.2, 0);
+        scene.add(flange);
+      });
+
+      [-0.95, 0.35].forEach(sx => {
+        const saddle = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.72, 0.7), flangeMat), k);
+        saddle.position.set(sx, -0.92, 0);
+        scene.add(saddle);
+      });
+
+      const hotDuct = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 2.25, 16), ductMat), k);
+      hotDuct.rotation.z = Math.PI / 2;
+      hotDuct.position.set(0.8, 0.52, -0.46);
+      scene.add(hotDuct);
+
+      const stack = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.55, 12), flangeMat), k);
+      stack.position.set(-0.8, 0.32, -0.2);
+      scene.add(stack);
+    }
+
+    // 04: Autothermal Rotary Pyrolysis Reactor
+    function buildReactorAssembly() {
+      const k = 'reactor';
+      const furnaceMat = new THREE.MeshStandardMaterial({ color: 0x262624, roughness: 0.45, metalness: 0.75 });
+      const drumSteel = new THREE.MeshStandardMaterial({
+        color: 0xc7c6be,
+        roughness: 0.22,
+        metalness: 0.88,
+        side: THREE.DoubleSide
+      });
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x161614, roughness: 0.35, metalness: 0.85 });
+
+      const furnaceBox = addPart(new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.82, 1.54), furnaceMat), k);
+      furnaceBox.position.set(2.05, -0.78, 0);
+      scene.add(furnaceBox);
+
+      const glowMat = new THREE.MeshStandardMaterial({
+        color: 0xea580c,
+        emissive: 0xc2410c,
+        emissiveIntensity: 1.2
+      });
+      const fireSlot = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.16, 1.56), glowMat), k);
+      fireSlot.position.set(2.05, -0.68, 0);
+      scene.add(fireSlot);
+
+      const outerCylinder = addPart(
+        new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 2.45, 32, 1, false, 0, Math.PI * 1.55), drumSteel),
+        k
+      );
+      outerCylinder.rotation.z = Math.PI / 2;
+      outerCylinder.rotation.x = -0.6;
+      outerCylinder.position.set(2.05, 0.06, 0);
+      scene.add(outerCylinder);
+
+      const screwGroup = new THREE.Group();
+      screwGroup.position.set(2.05, 0.06, 0);
+
+      const coreMat = new THREE.MeshStandardMaterial({
+        color: 0xdc2626,
+        emissive: 0x991b1b,
+        emissiveIntensity: 0.85,
+        roughness: 0.4
+      });
+      const centerTube = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 2.34, 16), coreMat), k);
+      centerTube.rotation.z = Math.PI / 2;
+      screwGroup.add(centerTube);
+
+      const bladeMat = new THREE.MeshStandardMaterial({
+        color: 0xf97316,
+        emissive: 0xc2410c,
+        emissiveIntensity: 0.55
+      });
+      for (let x = -1.04; x <= 1.04; x += 0.2) {
+        const flight = addPart(new THREE.Mesh(new THREE.TorusGeometry(0.44, 0.045, 8, 24), bladeMat), k);
+        flight.rotation.y = Math.PI / 2 + 0.22;
+        flight.position.x = x;
+        screwGroup.add(flight);
+      }
+      reactorScrew = screwGroup;
+      scene.add(reactorScrew);
+
+      [1.1, 2.05, 3.0].forEach(rx => {
+        const tire = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.74, 0.74, 0.14, 32), ringMat), k);
+        tire.rotation.z = Math.PI / 2;
+        tire.position.set(rx, 0.06, 0);
+        scene.add(tire);
+
+        [-0.55, 0.55].forEach(rz => {
+          const trunnion = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.18, 16), drumSteel), k);
+          trunnion.rotation.z = Math.PI / 2;
+          trunnion.position.set(rx, -0.52, rz);
+          scene.add(trunnion);
+        });
+      });
+
+      for (let i = 0; i < 8; i++) {
+        const fMat = new THREE.MeshStandardMaterial({
+          color: 0xfbbf24,
+          emissive: 0xea580c,
+          emissiveIntensity: 1.4
+        });
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.34, 8), fMat);
+        cone.position.set(1.25 + i * 0.22, -0.34, 0.25);
+        scene.add(cone);
+        burnerFlames.push(cone);
+      }
+    }
+
+    // 05: Syngas Scrubber, Return Piping & PLC Control Cabinet
+    function buildSyngasAssembly() {
+      const k = 'syngas';
+      const vesselMat = new THREE.MeshStandardMaterial({ color: 0x9c9a90, roughness: 0.28, metalness: 0.8 });
+      const darkSteel = new THREE.MeshStandardMaterial({ color: 0x262624, roughness: 0.45, metalness: 0.7 });
+      const glassPipeMat = new THREE.MeshStandardMaterial({
+        color: 0xb8b6ad,
+        transparent: true,
+        opacity: 0.48,
+        roughness: 0.12
+      });
+
+      const column = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.8, 24), vesselMat), k);
+      column.position.set(3.6, 0.12, -0.48);
+      scene.add(column);
+
+      const cone = addPart(new THREE.Mesh(new THREE.ConeGeometry(0.36, 0.52, 24), darkSteel), k);
+      cone.rotation.x = Math.PI;
+      cone.position.set(3.6, -1.04, -0.48);
+      scene.add(cone);
+
+      const returnPipe = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 1.7, 16), glassPipeMat), k);
+      returnPipe.rotation.z = Math.PI / 2;
+      returnPipe.position.set(2.8, 0.88, -0.48);
+      scene.add(returnPipe);
+
+      const cabinetMat = new THREE.MeshStandardMaterial({ color: 0xdad7cd, roughness: 0.35, metalness: 0.35 });
+      const plcBox = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.56, 0.5), cabinetMat), k);
+      plcBox.position.set(3.75, -0.36, 0.62);
+      scene.add(plcBox);
+
+      const screenMat = new THREE.MeshStandardMaterial({ color: 0x161614, roughness: 0.2 });
+      const hmiPanel = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.32, 0.52), screenMat), k);
+      hmiPanel.position.set(3.75, 0.08, 0.62);
+      scene.add(hmiPanel);
+    }
+
+    // 06: Water-Cooled Char Auger & Briquetting Press
+    function buildOutputAssembly() {
+      const k = 'output';
+      const steelMat = new THREE.MeshStandardMaterial({ color: 0x76766f, roughness: 0.35, metalness: 0.75 });
+      const bunkerMat = new THREE.MeshStandardMaterial({ color: 0x262624, roughness: 0.55, metalness: 0.5 });
+      const charMat = new THREE.MeshStandardMaterial({ color: 0x141413, roughness: 0.95 });
+
+      const auger = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.7, 18), steelMat), k);
+      auger.rotation.z = Math.PI / 2 - 0.22;
+      auger.position.set(4.1, -0.38, 0);
+      scene.add(auger);
+
+      const pressHead = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.65, 0.65), steelMat), k);
+      pressHead.position.set(4.75, -0.45, 0);
+      scene.add(pressHead);
+
+      const bunker = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.96, 1.22), bunkerMat), k);
+      bunker.position.set(5.15, -0.82, 0);
+      scene.add(bunker);
+
+      for (let i = 0; i < 16; i++) {
+        const briq = addPart(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.16, 10), charMat), k);
+        briq.position.set(
+          4.85 + (i % 3) * 0.22,
+          -0.3 + Math.floor(i / 6) * 0.11,
+          -0.26 + ((i * 5) % 4) * 0.16
+        );
+        briq.rotation.set(i * 0.7, i * 0.4, 0);
+        scene.add(briq);
+      }
+    }
+
+    // Animated Waste, Metal & Syngas Streams
+    function buildProcessStreams() {
+      const geo = new THREE.DodecahedronGeometry(0.15, 0);
+      for (let i = 0; i < 38; i++) {
+        const mat = new THREE.MeshStandardMaterial({ color: 0xa8a29e, roughness: 0.7 });
+        const item = new THREE.Mesh(geo, mat);
+        item.castShadow = true;
+        item.userData = {
+          t: i / 38,
+          zOff: (Math.random() - 0.5) * 0.44,
+          spin: (Math.random() - 0.5) * 0.12,
+          initHex: [0xa8a29e, 0x78716c, 0x57534e, 0xd6d3d1][i % 4]
+        };
+        scene.add(item);
+        wasteParticles.push(item);
+      }
+
+      const metalGeo = new THREE.OctahedronGeometry(0.065, 0);
+      for (let i = 0; i < 10; i++) {
+        const isAl = i % 2 === 0;
+        const mMat = new THREE.MeshStandardMaterial({
+          color: isAl ? 0x0284c7 : 0xeab308,
+          metalness: 0.85,
+          roughness: 0.2
+        });
+        const m = new THREE.Mesh(metalGeo, mMat);
+        m.userData = { p: i / 10, isAl };
+        scene.add(m);
+        metalParticles.push(m);
+      }
+
+      const gasGeo = new THREE.SphereGeometry(0.05, 8, 8);
+      for (let i = 0; i < 12; i++) {
+        const gMat = new THREE.MeshStandardMaterial({
+          color: 0x16a34a,
+          emissive: 0x15803d,
+          emissiveIntensity: 0.75
+        });
+        const g = new THREE.Mesh(gasGeo, gMat);
+        g.userData = { p: i / 12 };
+        scene.add(g);
+        gasParticles.push(g);
+      }
+    }
+
+    function updateStreams(elapsed) {
+      wasteParticles.forEach(item => {
+        item.userData.t += 0.0018;
+        if (item.userData.t > 1) item.userData.t = 0;
+
+        const t = item.userData.t;
+        item.rotation.x += item.userData.spin;
+        item.rotation.y += item.userData.spin;
+
+        if (t < 0.16) {
+          const lt = t / 0.16;
+          item.position.set(-4.6 + (lt - 0.5) * 0.35, 1.38 - lt * 1.15, item.userData.zOff);
+          item.scale.set(1.25, 0.95, 1.15);
+          item.material.color.setHex(item.userData.initHex);
+          item.material.emissive.setHex(0x000000);
+        } else if (t < 0.38) {
+          const lt = (t - 0.16) / 0.22;
+          item.position.set(-3.7 + lt * 2.3, -0.56 + lt * 0.5, item.userData.zOff * 0.7);
+          item.scale.set(0.46, 0.46, 0.46);
+          item.material.color.setHex(0xa16207);
+          item.material.emissive.setHex(0x000000);
+        } else if (t < 0.56) {
+          const lt = (t - 0.38) / 0.18;
+          item.position.set(-1.25 + lt * 1.95, -0.2 + Math.sin(lt * 12) * 0.04, item.userData.zOff * 0.4);
+          item.scale.set(0.42, 0.42, 0.42);
+          item.material.color.setHex(0x854d0e);
+          item.material.emissive.setHex(0x000000);
+        } else if (t < 0.84) {
+          const lt = (t - 0.56) / 0.28;
+          const angle = lt * Math.PI * 6 + elapsed * 2;
+          item.position.set(0.85 + lt * 2.35, 0.04 + Math.sin(angle) * 0.22, Math.cos(angle) * 0.22);
+          item.scale.set(0.4, 0.4, 0.4);
+
+          if (lt < 0.65) {
+            item.material.color.setHex(0xef4444);
+            item.material.emissive.setHex(0xdc2626);
+            item.material.emissiveIntensity = 1.1;
+          } else {
+            item.material.color.setHex(0x27272a);
+            item.material.emissive.setHex(0x7c2d12);
+            item.material.emissiveIntensity = 0.25;
+          }
+        } else {
+          const lt = (t - 0.84) / 0.16;
+          item.position.set(3.35 + lt * 1.8, -0.16 - lt * 0.55, item.userData.zOff * 0.5);
+          item.scale.set(0.5, 0.36, 0.5);
+          item.material.color.setHex(0x141413);
+          item.material.emissive.setHex(0x000000);
+        }
+      });
+
+      metalParticles.forEach(m => {
+        m.userData.p += 0.012;
+        if (m.userData.p > 1) m.userData.p = 0;
+        const p = m.userData.p;
+        const tx = m.userData.isAl ? -1.82 : -2.68;
+        m.position.set(tx + (1 - p) * 0.24, 0.06 - p * 0.96, p * 0.58);
+        m.rotation.x += 0.1;
+      });
+
+      gasParticles.forEach(g => {
+        g.userData.p += 0.015;
+        if (g.userData.p > 1) g.userData.p = 0;
+        g.position.set(3.6 - g.userData.p * 1.55, 0.88, -0.48);
+      });
+    }
+
+    function pickMesh(event) {
+      const box = document.getElementById('three-canvas');
+      const rect = box.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / box.clientWidth) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / box.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(partMeshes, false);
+      if (hits.length > 0 && hits[0].object.userData.station) {
+        selectStation(hits[0].object.userData.station);
+      }
+    }
+
+    function selectStation(key) {
+      currentKey = key;
+      const data = STATIONS[key];
+
+      document.querySelectorAll('.station-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-key') === key);
+      });
+
+      partMeshes.forEach(mesh => {
+        const mat = mesh.material;
+        if (key === 'all' || mesh.userData.station === key) {
+          mat.color.setHex(mesh.userData.baseHex);
+          mat.transparent = mesh.userData.baseTrans;
+          mat.opacity = mesh.userData.baseOpacity;
+        } else {
+          mat.transparent = true;
+          mat.opacity = 0.14;
+        }
+      });
+
+      camTargetPos.set(data.cam.x, data.cam.y, data.cam.z);
+      camLookAtPos.set(data.target.x, data.target.y, data.target.z);
+
+      document.getElementById('status-state').textContent = data.state;
+      document.getElementById('insp-code').textContent = data.code;
+      document.getElementById('insp-title').textContent = data.title;
+      document.getElementById('insp-desc').textContent = data.desc;
+
+      document.getElementById('insp-specs').innerHTML = data.specs.map(row => `
+        <div class="insp-spec-row">
+          <span class="insp-spec-key">${row[0]}</span>
+          <span class="insp-spec-val">${row[1]}</span>
+        </div>
+      `).join('');
+    }
+
+    function stepStation(dir) {
+      const idx = KEYS.indexOf(currentKey);
+      const nextIdx = (idx + dir + KEYS.length) % KEYS.length;
+      selectStation(KEYS[nextIdx]);
+    }
+
+    function toggleShell() {
+      shellVisible = !shellVisible;
+      containerShellGroup.visible = shellVisible;
+      const btn = document.getElementById('btn-shell');
+      btn.classList.toggle('active', shellVisible);
+      btn.textContent = shellVisible ? "Containerrahmen: Ein" : "Containerrahmen: Aus";
+    }
+
+    function toggleFlow() {
+      flowActive = !flowActive;
+      const btn = document.getElementById('btn-flow');
+      btn.classList.toggle('active', flowActive);
+      btn.textContent = flowActive ? "Materialfluss: Aktiv" : "Materialfluss: Pausiert";
+    }
+
+    function onResize() {
+      const box = document.getElementById('three-canvas');
+      if (!box || !renderer || !camera) return;
+      camera.aspect = box.clientWidth / box.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(box.clientWidth, box.clientHeight);
+    }
+
+    const clock = new THREE.Clock();
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      const elapsed = clock.getElapsedTime();
+
+      camera.position.lerp(camTargetPos, 0.07);
+      controls.target.lerp(camLookAtPos, 0.09);
+      controls.update();
+
+      if (flowActive) {
+        shredderRotors.forEach(r => {
+          r.group.rotation.z += 0.045 * r.dir;
+        });
+        if (reactorScrew) reactorScrew.rotation.x += 0.025;
+        if (eddyRotor) eddyRotor.rotation.z -= 0.09;
+        if (burnerLight) burnerLight.intensity = 2.0 + Math.sin(elapsed * 14) * 0.35;
+
+        burnerFlames.forEach((f, idx) => {
+          f.scale.y = 0.85 + Math.sin(elapsed * 12 + idx) * 0.25;
+        });
+
+        updateStreams(elapsed);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', initViewer);
+  </script>
+</body>
+</html>
